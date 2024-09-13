@@ -89,12 +89,12 @@ def parse_address(address: str, level=2):
         if not (district_key in duplicated_ward_district_keys and ward_key in duplicated_ward_keys):
             ward = ward_keys[ward_key][next(iter(ward_keys[ward_key]))]
         else:
-            if re.search(r'xa|commune', c_address):
+            if re.search(r'phong|ward', c_address):
                 ward_level_english = 'Commune'
             elif re.search(r'thitran|town', c_address):
                 ward_level_english = 'Town'
             else:
-                ward_level_english = 'Ward'
+                ward_level_english = 'Commune'
 
             ward = ward_keys[ward_key][ward_level_english]
 
