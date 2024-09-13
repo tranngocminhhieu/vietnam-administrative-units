@@ -4,18 +4,19 @@ import pickle
 import importlib.resources as pkg_resources
 
 class AdministrativeUnit(object):
-    def __init__(self, province=None, district=None, province_english=None, district_english=None):
+    def __init__(self, province=None, district=None, province_english=None, district_english=None, ward=None):
         self.province = province
         self.district = district
         self.province_english = province_english
         self.district_english = district_english
+        self.ward = ward
 
     def __repr__(self):
-        return f'AdministrativeUnit(province={self.province}, district={self.district}, province_english={self.province_english}, district_english={self.district_english})'
+        return f'AdministrativeUnit(province={self.province}, district={self.district}, province_english={self.province_english}, district_english={self.district_english}, ward={self.ward})'
 
 
 with pkg_resources.open_binary('vnau_parser.data', 'data.pkl') as f:
-    duplicated_district_keys, duplicated_district_province_keys, province_keys_1, province_keys_2, province_map, district_map = pickle.load(f)
+    duplicated_district_keys, duplicated_district_province_keys, duplicated_ward_keys, duplicated_ward_district_keys, province_keys_1, province_keys_2, province_map, district_map, ward_map = pickle.load(f)
 
 # Pickle
 grammar_replacements = [
@@ -33,7 +34,7 @@ def parse_address(address: str, level=2):
     for replacement in grammar_replacements:
         c_address = re.sub(rf"\b{replacement[0]}\b", replacement[1], c_address)
 
-    c_address = c_address.replace('-', '').replace(' ', '')
+    c_address = c_address.replace('-', '').replace("'", "").replace(' ', '')
 
 
     # Find Province
@@ -58,13 +59,12 @@ def parse_address(address: str, level=2):
     results = re.search(rf"{'|'.join(district_keys)}", c_address)
     if results:
         district_key = results.group(0)
-        # print(province_key, district_key)
 
         # Help avoid wrong data input for unique districts in a province
         if not (province_key in duplicated_district_province_keys and district_key in duplicated_district_keys):
 
-            district = district_keys[district_key][next(iter(district_keys[district_key]))]['district_long']
-            district_english = district_keys[district_key][next(iter(district_keys[district_key]))]['district_long_english']
+            district = district_keys[district_key][next(iter(district_keys[district_key]))]['district']
+            district_english = district_keys[district_key][next(iter(district_keys[district_key]))]['district_english']
 
         else:
             if re.search(r'thanhpho|city', c_address):
@@ -72,11 +72,32 @@ def parse_address(address: str, level=2):
             elif re.search(r'thixa|town', c_address):
                 level_english = 'Town'
             else:
-                level_english = ''
+                level_english = 'District'
 
-            district = district_keys[district_key][level_english]['district_long']
-            district_english = district_keys[district_key][level_english]['district_long_english']
+            district = district_keys[district_key][level_english]['district']
+            district_english = district_keys[district_key][level_english]['district_english']
+
+            if level == 2:
+                return AdministrativeUnit(province=province, district=district, province_english=province_english, district_english=district_english)
     else:
-        district_key, district, district_english = None, None, None
+        return AdministrativeUnit(province=province, province_english=province_english)
 
-    return AdministrativeUnit(province=province, district=district, province_english=province_english, district_english=district_english)
+    ward_keys = ward_map[province_english][district_english]
+    results = re.search(rf"{'|'.join(ward_keys)}", c_address)
+    if results:
+        ward_key = results.group(0)
+        if not (district_key in duplicated_ward_district_keys and ward_key in duplicated_ward_keys):
+            ward = ward_keys[ward_key][next(iter(ward_keys[ward_key]))]
+        else:
+            if re.search(r'xa|commune', c_address):
+                ward_level_english = 'Commune'
+            elif re.search(r'thitran|town', c_address):
+                ward_level_english = 'Town'
+            else:
+                ward_level_english = 'Ward'
+
+            ward = ward_keys[ward_key][ward_level_english]
+
+        return AdministrativeUnit(province=province, district=district, province_english=province_english, district_english=district_english, ward=ward)
+    else:
+        return AdministrativeUnit(province=province, district=district, province_english=province_english, district_english=district_english)
