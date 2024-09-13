@@ -1,11 +1,9 @@
 import re
-import numpy as np
-import pandas as pd
 from unidecode import unidecode
 import pickle
 import importlib.resources as pkg_resources
 
-class Unit(object):
+class AdministrativeUnit(object):
     def __init__(self, province=None, district=None, province_english=None, district_english=None):
         self.province = province
         self.district = district
@@ -13,11 +11,11 @@ class Unit(object):
         self.district_english = district_english
 
     def __repr__(self):
-        return f'Unit(province={self.province}, district={self.district}, province_english={self.province_english}, district_english={self.district_english})'
+        return f'AdministrativeUnit(province={self.province}, district={self.district}, province_english={self.province_english}, district_english={self.district_english})'
 
 
 with pkg_resources.open_binary('vnau_parser.data', 'data.pkl') as f:
-    df, df_province, duplicated_district_keys, duplicated_district_province_keys, province_keys_1, province_keys_2 = pickle.load(f)
+    duplicated_district_keys, duplicated_district_province_keys, province_keys_1, province_keys_2, province_map, district_map = pickle.load(f)
 
 # Pickle
 grammar_replacements = [
@@ -48,22 +46,26 @@ def parse_address(address: str, level=2):
 
     if results:
         province_key = results.group(0)
-        province = df_province.loc[df_province.province_key == province_key, 'province'].values[0]
-        province_english = df_province.loc[df_province.province_key == province_key, 'province_english'].values[0]
+        province = province_map[province_key]['province']
+        province_english = province_map[province_key]['province_english']
         if level == 1:
-            return Unit(province=province, province_english=province_english)
+            return AdministrativeUnit(province=province, province_english=province_english)
     else:
-        return Unit()
+        return AdministrativeUnit()
 
     # Find District
-    district_Keys = df[df.province_english == province_english].district_key.tolist()
-    results = re.search(rf"{'|'.join(district_Keys)}", c_address)
+    district_keys = district_map[province_english]
+    results = re.search(rf"{'|'.join(district_keys)}", c_address)
     if results:
         district_key = results.group(0)
         # print(province_key, district_key)
+
+        # Help avoid wrong data input for unique districts in a province
         if not (province_key in duplicated_district_province_keys and district_key in duplicated_district_keys):
-            district = df.loc[(df.province_english == province_english) & (df.district_key == district_key), 'district_long'].values[0]
-            district_english = df.loc[(df.province_english == province_english) & (df.district_key == district_key), 'district_long_english'].values[0]
+
+            district = district_keys[district_key][next(iter(district_keys[district_key]))]['district_long']
+            district_english = district_keys[district_key][next(iter(district_keys[district_key]))]['district_long_english']
+
         else:
             if re.search(r'thanhpho|city', c_address):
                 level_english = 'City'
@@ -71,10 +73,10 @@ def parse_address(address: str, level=2):
                 level_english = 'Town'
             else:
                 level_english = ''
-            district = df.loc[(df.province_key == province_key) & (df.district_key == district_key) & (df.level_english == level_english), 'district_long'].values[0]
-            district_english = df.loc[(df.province_key == province_key) & (df.district_key == district_key) & (df.level_english == level_english), 'district_long_english'].values[0]
+
+            district = district_keys[district_key][level_english]['district_long']
+            district_english = district_keys[district_key][level_english]['district_long_english']
     else:
         district_key, district, district_english = None, None, None
 
-    return Unit(province=province, district=district, province_english=province_english,
-                district_english=district_english)
+    return AdministrativeUnit(province=province, district=district, province_english=province_english, district_english=district_english)
