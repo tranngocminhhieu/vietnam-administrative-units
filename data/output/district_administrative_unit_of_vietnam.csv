@@ -50,7 +50,7 @@ Bến Lức,Long An,,,Bến Lức,Ben Luc,Ben Luc,Long An
 Bến Tre,Bến Tre,Thành phố,City,Thành phố Bến Tre,Ben Tre,Ben Tre City,Ben Tre
 Biên Hòa,Đồng Nai,Thành phố,City,Thành phố Biên Hòa,Bien Hoa,Bien Hoa City,Dong Nai
 Bỉm Sơn,Thanh Hóa,Thị xã,Town,Thị xã Bỉm Sơn,Bim Son,Bim Son Town,Thanh Hoa
-Bình Chánh,Thành phố Hồ Chí Minh,,,Bình Chánh,Binh Chanh,Binh Chanh,Ho Chi Minh City
+Bình Chánh,Hồ Chí Minh,,,Bình Chánh,Binh Chanh,Binh Chanh,Ho Chi Minh
 Bình Đại,Bến Tre,,,Bình Đại,Binh Dai,Binh Dai,Ben Tre
 Bình Gia,Lạng Sơn,,,Bình Gia,Binh Gia,Binh Gia,Lang Son
 Bình Giang,Hải Dương,,,Bình Giang,Binh Giang,Binh Giang,Hai Duong
@@ -59,9 +59,9 @@ Bình Long,Bình Phước,Thị xã,Town,Thị xã Bình Long,Binh Long,Binh Lon
 Bình Lục,Hà Nam,,,Bình Lục,Binh Luc,Binh Luc,Ha Nam
 Bình Minh,Vĩnh Long,Thị xã,Town,Thị xã Bình Minh,Binh Minh,Binh Minh Town,Vinh Long
 Bình Sơn,Quảng Ngãi,,,Bình Sơn,Binh Son,Binh Son,Quang Ngai
-Bình Tân,Thành phố Hồ Chí Minh,,,Bình Tân,Binh Tan,Binh Tan,Ho Chi Minh City
+Bình Tân,Hồ Chí Minh,,,Bình Tân,Binh Tan,Binh Tan,Ho Chi Minh
 Bình Tân,Vĩnh Long,,,Bình Tân,Binh Tan,Binh Tan,Vinh Long
-Bình Thạnh,Thành phố Hồ Chí Minh,,,Bình Thạnh,Binh Thanh,Binh Thanh,Ho Chi Minh City
+Bình Thạnh,Hồ Chí Minh,,,Bình Thạnh,Binh Thanh,Binh Thanh,Ho Chi Minh
 Bình Thủy,Cần Thơ,,,Bình Thủy,Binh Thuy,Binh Thuy,Can Tho
 Bình Xuyên,Vĩnh Phúc,,,Bình Xuyên,Binh Xuyen,Binh Xuyen,Vinh Phuc
 Bố Trạch,Quảng Bình,,,Bố Trạch,Bo Trach,Bo Trach,Quang Binh
@@ -88,7 +88,7 @@ Cam Ranh,Khánh Hòa,Thành phố,City,Thành phố Cam Ranh,Cam Ranh,Cam Ranh C
 Cẩm Thủy,Thanh Hóa,,,Cẩm Thủy,Cam Thuy,Cam Thuy,Thanh Hoa
 Cẩm Xuyên,Hà Tĩnh,,,Cẩm Xuyên,Cam Xuyen,Cam Xuyen,Ha Tinh
 Cần Đước,Long An,,,Cần Đước,Can Duoc,Can Duoc,Long An
-Cần Giờ,Thành phố Hồ Chí Minh,,,Cần Giờ,Can Gio,Can Gio,Ho Chi Minh City
+Cần Giờ,Hồ Chí Minh,,,Cần Giờ,Can Gio,Can Gio,Ho Chi Minh
 Cần Giuộc,Long An,,,Cần Giuộc,Can Giuoc,Can Giuoc,Long An
 Can Lộc,Hà Tĩnh,,,Can Lộc,Can Loc,Can Loc,Ha Tinh
 Càng Long,Trà Vinh,,,Càng Long,Cang Long,Cang Long,Tra Vinh
@@ -135,7 +135,7 @@ Cô Tô,Quảng Ninh,,,Cô Tô,Co To,Co To,Quang Ninh
 Cồn Cỏ,Quảng Trị,,,Cồn Cỏ,Con Co,Con Co,Quang Tri
 Con Cuông,Nghệ An,,,Con Cuông,Con Cuong,Con Cuong,Nghe An
 Côn Đảo,Bà Rịa - Vũng Tàu,,,Côn Đảo,Con Dao,Con Dao,Ba Ria - Vung Tau
-Củ Chi,Thành phố Hồ Chí Minh,,,Củ Chi,Cu Chi,Cu Chi,Ho Chi Minh City
+Củ Chi,Hồ Chí Minh,,,Củ Chi,Cu Chi,Cu Chi,Ho Chi Minh
 Cư Jút,Đắk Nông,,,Cư Jút,Cu Jut,Cu Jut,Dak Nong
 Cư Kuin,Đắk Lắk,,,Cư Kuin,Cu Kuin,Cu Kuin,Dak Lak
 Cù Lao Dung,Sóc Trăng,,,Cù Lao Dung,Cu Lao Dung,Cu Lao Dung,Soc Trang
@@ -225,7 +225,7 @@ Gò Công Đông,Tiền Giang,,,Gò Công Đông,Go Cong Dong,Go Cong Dong,Tien 
 Gò Công Tây,Tiền Giang,,,Gò Công Tây,Go Cong Tay,Go Cong Tay,Tien Giang
 Gò Dầu,Tây Ninh,,,Gò Dầu,Go Dau,Go Dau,Tay Ninh
 Gò Quao,Kiên Giang,,,Gò Quao,Go Quao,Go Quao,Kien Giang
-Gò Vấp,Thành phố Hồ Chí Minh,,,Gò Vấp,Go Vap,Go Vap,Ho Chi Minh City
+Gò Vấp,Hồ Chí Minh,,,Gò Vấp,Go Vap,Go Vap,Ho Chi Minh
 Hà Đông,Hà Nội,,,Hà Đông,Ha Dong,Ha Dong,Ha Noi
 Hà Giang,Hà Giang,Thành phố,City,Thành phố Hà Giang,Ha Giang,Ha Giang City,Ha Giang
 Hạ Hòa,Phú Thọ,,,Hạ Hòa,Ha Hoa,Ha Hoa,Phu Tho
@@ -264,7 +264,7 @@ Hoàng Mai,Hà Nội,,,Hoàng Mai,Hoang Mai,Hoang Mai,Ha Noi
 Hoàng Mai,Nghệ An,Thị xã,Town,Thị xã Hoàng Mai,Hoang Mai,Hoang Mai Town,Nghe An
 Hoàng Sa,Đà Nẵng,,,Hoàng Sa,Hoang Sa,Hoang Sa,Da Nang
 Hoàng Su Phì,Hà Giang,,,Hoàng Su Phì,Hoang Su Phi,Hoang Su Phi,Ha Giang
-Hóc Môn,Thành phố Hồ Chí Minh,,,Hóc Môn,Hoc Mon,Hoc Mon,Ho Chi Minh City
+Hóc Môn,Hồ Chí Minh,,,Hóc Môn,Hoc Mon,Hoc Mon,Ho Chi Minh
 Hội An,Quảng Nam,Thành phố,City,Thành phố Hội An,Hoi An,Hoi An City,Quang Nam
 Hòn Đất,Kiên Giang,,,Hòn Đất,Hon Dat,Hon Dat,Kien Giang
 Hớn Quản,Bình Phước,,,Hớn Quản,Hon Quan,Hon Quan,Binh Phuoc
@@ -414,7 +414,7 @@ Ngọc Hồi,Kon Tum,,,Ngọc Hồi,Ngoc Hoi,Ngoc Hoi,Kon Tum
 Ngọc Lặc,Thanh Hóa,,,Ngọc Lặc,Ngoc Lac,Ngoc Lac,Thanh Hoa
 Ngũ Hành Sơn,Đà Nẵng,,,Ngũ Hành Sơn,Ngu Hanh Son,Ngu Hanh Son,Da Nang
 Nguyên Bình,Cao Bằng,,,Nguyên Bình,Nguyen Binh,Nguyen Binh,Cao Bang
-Nhà Bè,Thành phố Hồ Chí Minh,,,Nhà Bè,Nha Be,Nha Be,Ho Chi Minh City
+Nhà Bè,Hồ Chí Minh,,,Nhà Bè,Nha Be,Nha Be,Ho Chi Minh
 Nha Trang,Khánh Hòa,Thành phố,City,Thành phố Nha Trang,Nha Trang,Nha Trang City,Khanh Hoa
 Nho Quan,Ninh Bình,,,Nho Quan,Nho Quan,Nho Quan,Ninh Binh
 Nhơn Trạch,Đồng Nai,,,Nhơn Trạch,Nhon Trach,Nhon Trach,Dong Nai
@@ -448,7 +448,7 @@ Phú Lương,Thái Nguyên,,,Phú Lương,Phu Luong,Phu Luong,Thai Nguyen
 Phủ Lý,Hà Nam,Thành phố,City,Thành phố Phủ Lý,Phu Ly,Phu Ly City,Ha Nam
 Phú Mỹ,Bà Rịa - Vũng Tàu,Thị xã,Town,Thị xã Phú Mỹ,Phu My,Phu My Town,Ba Ria - Vung Tau
 Phù Mỹ,Bình Định,,,Phù Mỹ,Phu My,Phu My,Binh Dinh
-Phú Nhuận,Thành phố Hồ Chí Minh,,,Phú Nhuận,Phu Nhuan,Phu Nhuan,Ho Chi Minh City
+Phú Nhuận,Hồ Chí Minh,,,Phú Nhuận,Phu Nhuan,Phu Nhuan,Ho Chi Minh
 Phú Ninh,Quảng Nam,,,Phú Ninh,Phu Ninh,Phu Ninh,Quang Nam
 Phù Ninh,Phú Thọ,,,Phù Ninh,Phu Ninh,Phu Ninh,Phu Tho
 Phú Quốc,Kiên Giang,Thành phố,City,Thành phố Phú Quốc,Phu Quoc,Phu Quoc City,Kien Giang
@@ -468,16 +468,16 @@ Phước Long,Bình Phước,Thị xã,Town,Thị xã Phước Long,Phuoc Long,P
 Phước Long,Bạc Liêu,,,Phước Long,Phuoc Long,Phuoc Long,Bac Lieu
 Phước Sơn,Quảng Nam,,,Phước Sơn,Phuoc Son,Phuoc Son,Quang Nam
 Pleiku,Gia Lai,Thành phố,City,Thành phố Pleiku,Pleiku,Pleiku City,Gia Lai
-Quận 1,Thành phố Hồ Chí Minh,,,Quận 1,Quan 1,District 1,Ho Chi Minh City
-Quận 3,Thành phố Hồ Chí Minh,,,Quận 3,Quan 3,District 3,Ho Chi Minh City
-Quận 4,Thành phố Hồ Chí Minh,,,Quận 4,Quan 4,District 4,Ho Chi Minh City
-Quận 5,Thành phố Hồ Chí Minh,,,Quận 5,Quan 5,District 5,Ho Chi Minh City
-Quận 6,Thành phố Hồ Chí Minh,,,Quận 6,Quan 6,District 6,Ho Chi Minh City
-Quận 7,Thành phố Hồ Chí Minh,,,Quận 7,Quan 7,District 7,Ho Chi Minh City
-Quận 8,Thành phố Hồ Chí Minh,,,Quận 8,Quan 8,District 8,Ho Chi Minh City
-Quận 10,Thành phố Hồ Chí Minh,,,Quận 10,Quan 10,District 10,Ho Chi Minh City
-Quận 11,Thành phố Hồ Chí Minh,,,Quận 11,Quan 11,District 11,Ho Chi Minh City
-Quận 12,Thành phố Hồ Chí Minh,,,Quận 12,Quan 12,District 12,Ho Chi Minh City
+Quận 1,Hồ Chí Minh,,,Quận 1,Quan 1,District 1,Ho Chi Minh
+Quận 3,Hồ Chí Minh,,,Quận 3,Quan 3,District 3,Ho Chi Minh
+Quận 4,Hồ Chí Minh,,,Quận 4,Quan 4,District 4,Ho Chi Minh
+Quận 5,Hồ Chí Minh,,,Quận 5,Quan 5,District 5,Ho Chi Minh
+Quận 6,Hồ Chí Minh,,,Quận 6,Quan 6,District 6,Ho Chi Minh
+Quận 7,Hồ Chí Minh,,,Quận 7,Quan 7,District 7,Ho Chi Minh
+Quận 8,Hồ Chí Minh,,,Quận 8,Quan 8,District 8,Ho Chi Minh
+Quận 10,Hồ Chí Minh,,,Quận 10,Quan 10,District 10,Ho Chi Minh
+Quận 11,Hồ Chí Minh,,,Quận 11,Quan 11,District 11,Ho Chi Minh
+Quận 12,Hồ Chí Minh,,,Quận 12,Quan 12,District 12,Ho Chi Minh
 Quản Bạ,Hà Giang,,,Quản Bạ,Quan Ba,Quan Ba,Ha Giang
 Quan Hóa,Thanh Hóa,,,Quan Hóa,Quan Hoa,Quan Hoa,Thanh Hoa
 Quan Sơn,Thanh Hóa,,,Quan Sơn,Quan Son,Quan Son,Thanh Hoa
@@ -534,7 +534,7 @@ Tam Nông,Đồng Tháp,,,Tam Nông,Tam Nong,Tam Nong,Dong Thap
 Tam Nông,Phú Thọ,,,Tam Nông,Tam Nong,Tam Nong,Phu Tho
 Tân An,Long An,Thành phố,City,Thành phố Tân An,Tan An,Tan An City,Long An
 Tân Biên,Tây Ninh,,,Tân Biên,Tan Bien,Tan Bien,Tay Ninh
-Tân Bình,Thành phố Hồ Chí Minh,,,Tân Bình,Tan Binh,Tan Binh,Ho Chi Minh City
+Tân Bình,Hồ Chí Minh,,,Tân Bình,Tan Binh,Tan Binh,Ho Chi Minh
 Tân Châu,An Giang,Thị xã,Town,Thị xã Tân Châu,Tan Chau,Tan Chau Town,An Giang
 Tân Châu,Tây Ninh,,,Tân Châu,Tan Chau,Tan Chau,Tay Ninh
 Tân Hiệp,Kiên Giang,,,Tân Hiệp,Tan Hiep,Tan Hiep,Kien Giang
@@ -542,7 +542,7 @@ Tân Hồng,Đồng Tháp,,,Tân Hồng,Tan Hong,Tan Hong,Dong Thap
 Tân Hưng,Long An,,,Tân Hưng,Tan Hung,Tan Hung,Long An
 Tân Kỳ,Nghệ An,,,Tân Kỳ,Tan Ky,Tan Ky,Nghe An
 Tân Lạc,Hòa Bình,,,Tân Lạc,Tan Lac,Tan Lac,Hoa Binh
-Tân Phú,Thành phố Hồ Chí Minh,,,Tân Phú,Tan Phu,Tan Phu,Ho Chi Minh City
+Tân Phú,Hồ Chí Minh,,,Tân Phú,Tan Phu,Tan Phu,Ho Chi Minh
 Tân Phú,Đồng Nai,,,Tân Phú,Tan Phu,Tan Phu,Dong Nai
 Tân Phú Đông,Tiền Giang,,,Tân Phú Đông,Tan Phu Dong,Tan Phu Dong,Tien Giang
 Tân Phước,Tiền Giang,,,Tân Phước,Tan Phuoc,Tan Phuoc,Tien Giang
@@ -593,7 +593,7 @@ Thới Lai,Cần Thơ,,,Thới Lai,Thoi Lai,Thoi Lai,Can Tho
 Thống Nhất,Đồng Nai,,,Thống Nhất,Thong Nhat,Thong Nhat,Dong Nai
 Thốt Nốt,Cần Thơ,,,Thốt Nốt,Thot Not,Thot Not,Can Tho
 Thủ Dầu Một,Bình Dương,Thành phố,City,Thành phố Thủ Dầu Một,Thu Dau Mot,Thu Dau Mot City,Binh Duong
-Thủ Đức,Thành phố Hồ Chí Minh,Thành phố,City,Thành phố Thủ Đức,Thu Duc,Thu Duc City,Ho Chi Minh City
+Thủ Đức,Hồ Chí Minh,Thành phố,City,Thành phố Thủ Đức,Thu Duc,Thu Duc City,Ho Chi Minh
 Thủ Thừa,Long An,,,Thủ Thừa,Thu Thua,Thu Thua,Long An
 Thuận An,Bình Dương,Thành phố,City,Thành phố Thuận An,Thuan An,Thuan An City,Binh Duong
 Thuận Bắc,Ninh Thuận,,,Thuận Bắc,Thuan Bac,Thuan Bac,Ninh Thuan
