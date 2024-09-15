@@ -1,1 +1,1 @@
-from .module import parse_address
+from .parse import parse_address

@@ -69,7 +69,7 @@ class AdministrativeUnit:
                 f"ward_level_english={self.ward_level_english!r})")
 
 # Load data from pickle
-with pkg_resources.open_binary('vnau_parser.data', 'data.pkl') as f:
+with pkg_resources.open_binary('vnau_parser.data', 'parse.pkl') as f:
     duplicated_district_keys, duplicated_district_province_keys, duplicated_ward_keys, duplicated_ward_district_keys, province_keys_1, province_keys_2, province_map, district_map, ward_map = pickle.load(f)
 
 
