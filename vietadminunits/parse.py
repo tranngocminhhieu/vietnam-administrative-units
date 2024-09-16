@@ -90,10 +90,10 @@ class AdministrativeUnit:
             f"{'ward_level_english':<30} | {safe_format(self.ward_level_english):<30}\n")
 
 
-
 # Load data from pickle
 with pkg_resources.open_binary('vietadminunits.data', 'parse.pkl') as f:
     duplicated_district_keys, duplicated_district_province_keys, duplicated_ward_keys, duplicated_ward_district_keys, province_keys_1, province_keys_2, province_keys_3, province_map, district_map, ward_map, double_check_provinces, double_check_districts = pickle.load(f)
+
 
 def replace_from_right(s, old, new):
     pos = s.rfind(old)
@@ -123,17 +123,15 @@ def parse_address(address: str, level=3):
 
     # Removing space have to do after fixing grammar
     c_address = c_address.replace('-', '').replace("'", "").replace(' 0', ' ').replace(' ', '')
-    # print(c_address)
 
     # Find Province
     results = province_patterns_1.search(c_address)
-    # results = list(province_patterns_1.finditer(c_address))
     if not results:
         for pattern in province_patterns_2:
             results = pattern.search(c_address)
             if results:
                 break
-        # results = list(province_patterns_2.finditer(c_address))
+
     if not results:
         for pattern in province_patterns_3:
             results = pattern.search(c_address)
@@ -148,9 +146,8 @@ def parse_address(address: str, level=3):
             for new_key in new_keys:
                 if new_key in c_address and c_address.find(new_key) > c_address.find(province_key):
                     province_key = new_key
+                    break
 
-
-        # c_address = c_address.replace(province_key, '', 1)
         c_address = replace_from_right(c_address, province_key, '')
         province_data = province_map[province_key]
         admin_unit.province = province_data['province']
@@ -165,7 +162,6 @@ def parse_address(address: str, level=3):
 
     # Find District
     district_keys = district_map[admin_unit.province_english]
-    # district_keys = dict(sorted(district_keys.items(), key=lambda item: len(item[0]), reverse=True))
     district_results = re.search(rf"{'|'.join(district_keys)}", c_address)
     if district_results:
         district_key = district_results.group(0)
@@ -175,9 +171,7 @@ def parse_address(address: str, level=3):
             for new_key in new_keys:
                 if new_key in c_address and c_address.find(new_key) > c_address.find(district_key):
                     district_key = new_key
-
-
-        # c_address = c_address.replace(district_key, '', 1)
+                    break
 
         district_data = district_keys[district_key]
 
@@ -185,7 +179,6 @@ def parse_address(address: str, level=3):
         if not (province_key in duplicated_district_province_keys and district_key in duplicated_district_keys):
             district_entry = district_data[next(iter(district_data))]
         else:
-            # district_level = 'City' if re.search(r'thanhpho|city', c_address) else 'Town' if re.search(r'thixa|town', c_address) else 'District'
             if re.search(r'thanhpho|city', c_address):
                 district_level = 'City'
             elif re.search(r'thixa|town', c_address):
@@ -225,7 +218,12 @@ def parse_address(address: str, level=3):
         if not (district_key in duplicated_ward_district_keys and ward_key in duplicated_ward_keys):
             ward_entry = ward_data[next(iter(ward_data))]
         else:
-            ward_level = 'Commune' if re.search(r'phong|ward', c_address) else 'Town' if re.search(r'thitran|town', c_address) else 'Commune'
+            if re.search(r'phuong|ward', c_address):
+                ward_level = 'Ward'
+            elif re.search(r'thitran|town', c_address):
+                ward_level = 'Town'
+            else:
+                ward_level = 'Commune'
             ward_entry = ward_data[ward_level]
 
         admin_unit.ward = ward_entry['ward']
