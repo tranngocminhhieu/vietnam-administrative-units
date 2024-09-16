@@ -178,13 +178,18 @@ def parse_address(address: str, level=3):
         # Help avoid wrong data input for unique districts in a province
         if not (province_key in duplicated_district_province_keys and district_key in duplicated_district_keys):
             district_entry = district_data[next(iter(district_data))]
+            print(district_key)
+            print(duplicated_district_keys)
         else:
             if re.search(r'thanhpho|city', c_address):
                 district_level = 'City'
             elif re.search(r'thixa|town', c_address):
                 district_level = 'Town'
-            else:
+            elif re.search(r'huyen|district', c_address):
                 district_level = 'District'
+            else:
+                district_level = duplicated_district_keys[district_key]
+            print(district_level)
 
             district_entry = district_data[district_level]
 
@@ -220,10 +225,13 @@ def parse_address(address: str, level=3):
         else:
             if re.search(r'phuong|ward', c_address):
                 ward_level = 'Ward'
+            elif re.search(r'xa|Commune', c_address):
+                ward_level = 'Commune'
             elif re.search(r'thitran|town', c_address):
                 ward_level = 'Town'
             else:
-                ward_level = 'Commune'
+                ward_level = duplicated_ward_keys[ward_key]
+
             ward_entry = ward_data[ward_level]
 
         admin_unit.ward = ward_entry['ward']
