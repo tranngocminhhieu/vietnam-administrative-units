@@ -184,8 +184,6 @@ def parse_address(address: str, level=3):
         # Help avoid wrong data input for unique districts in a province
         if not (province_key in duplicated_district_province_keys and district_key in duplicated_district_keys):
             district_entry = district_data[next(iter(district_data))]
-            print(district_key)
-            print(duplicated_district_keys)
         else:
             if re.search(r'thanhpho|city', c_address):
                 district_level = 'City'
@@ -195,7 +193,6 @@ def parse_address(address: str, level=3):
                 district_level = 'District'
             else:
                 district_level = duplicated_district_keys[district_key]
-            print(district_level)
 
             district_entry = district_data[district_level]
 
