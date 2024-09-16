@@ -93,7 +93,7 @@ class AdministrativeUnit:
 
 # Load data from pickle
 with pkg_resources.open_binary('vietadminunits.data', 'parse.pkl') as f:
-    duplicated_district_keys, duplicated_district_province_keys, duplicated_ward_keys, duplicated_ward_district_keys, province_keys_1, province_keys_2, province_keys_3, province_map, district_map, ward_map = pickle.load(f)
+    duplicated_district_keys, duplicated_district_province_keys, duplicated_ward_keys, duplicated_ward_district_keys, province_keys_1, province_keys_2, province_keys_3, province_map, district_map, ward_map, double_check_provinces, double_check_districts = pickle.load(f)
 
 def replace_from_right(s, old, new):
     pos = s.rfind(old)
@@ -102,68 +102,12 @@ def replace_from_right(s, old, new):
     return s
 
 
-
 # Precompile replacement and province regex patterns
 grammar_replacements = [(re.compile(rf"\b{old}\b"), new) for old, new in [('qui', 'quy'), ('pak', 'pac'), ('hn', 'ha noi')]]
 province_patterns_1 = re.compile(rf"{'|'.join(province_keys_1)}")
 province_patterns_2 = [re.compile(key) for key in province_keys_2]
 province_patterns_3 = [re.compile(key) for key in province_keys_3]
 
-
-
-double_check_provinces = {'vinhphuc': ['hagiang', 'thanhhoa'],
- 'thaibinh': ['hoabinh', 'longan'],
- 'binhthuan': ['thainguyen', 'quangngai', 'binhdinh'],
- 'lamdong': ['haiphong'],
- 'vinhlong': ['haiphong'],
- 'thainguyen': ['thaibinh'],
- 'tayninh': ['thaibinh'],
- 'angiang': ['ninhbinh'],
- 'sonla': ['ninhbinh', 'quangngai', 'khanhhoa'],
- 'khanhhoa': ['ninhbinh', 'angiang'],
- 'dienbien': ['thanhhoa'],
- 'thanhhoa': ['quangbinh', 'binhphuoc'],
- 'kiengiang': ['quangbinh'],
- 'haiduong': ['quangtri'],
- 'quangnam': ['phuyen'],
- 'quangtri': ['lamdong'],
- 'quangngai': ['lamdong'],
- 'dongnai': ['lamdong'],
- 'phutho': ['binhduong', 'angiang'],
- 'longan': ['dongnai', 'vinhlong', 'angiang'],
- 'binhphuoc': ['vinhlong', 'angiang'],
- 'hungyen': ['kiengiang']}
-
-
-double_check_districts = {'unghoa': ['caugiay', 'chuongmy'],
- 'thanhtri': ['hoangmai'],
- 'thanhxuan': ['socson'],
- 'thanhoai': ['thanhtri'],
- 'muongla': ['phuyen', 'songma', 'sopcop'],
- 'tranyen': ['lucyen', 'yenbinh'],
- 'uongbi': ['mongcai'],
- 'halong': ['vandon'],
- 'haiduong': ['binhgiang'],
- 'phucu': ['hungyen'],
- 'dongson': ['thanhhoa', 'bimson'],
- 'thanhhoa': ['nhuxuan'],
- 'kyson': ['tanky'],
- 'vinh': ['anhson', 'yenthanh', 'hoangmai'],
- 'huongthuy': ['hue', 'hue', 'hue'],
- 'giang': ['thangbinh', 'bactramy', 'nuithanh'],
- 'tramy': ['bactramy'],
- 'sontinh': ['sontay'],
- 'ducpho': ['moduc'],
- 'iapa': ['chuse'],
- 'krongbuk': ['krongpac'],
- 'hoathanh': ['chauthanh'],
- 'thongnhat': ['bienhoa'],
- 'tanphu': ['thuduc', 'quan7'],
- 'tanan': ['canduoc'],
- 'tanphuoc': ['gocongdong'],
- 'cainhum': ['mangthit'],
- 'chauphu': ['chaudoc', 'chaudoc'],
- 'anminh': ['chauthanh', 'uminhthuong']}
 
 def parse_address(address: str, level=3):
     if level not in range(1,4):

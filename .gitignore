@@ -160,3 +160,5 @@ cython_debug/
 .idea/
 .gitattributes
 .DS_store
+data/testing/VNCB Platform SLA _updated 240822.xlsx
+notebook/module_tesing_njv.ipynb
