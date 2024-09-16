@@ -211,9 +211,13 @@ def parse_address(address: str, level=3):
 
     # Find ward
     ward_keys = ward_map[admin_unit.province_english][admin_unit.district_english]
-    # print(c_address)
-    # print(ward_keys)
+
+    # Some districts do not have a ward, for instance: Huyện Bạch Long Vĩ, Thành phố Hải Phòng
+    if not ward_keys:
+        return admin_unit
+
     ward_results = re.search(rf"{'|'.join(ward_keys)}", c_address)
+
     if ward_results:
         ward_key = ward_results.group(0)
         ward_data = ward_keys[ward_key]
@@ -233,4 +237,5 @@ def parse_address(address: str, level=3):
         admin_unit.ward_level = ward_entry['ward_level']
         admin_unit.ward_level_english = ward_entry['ward_level_english']
         admin_unit.ward_key = ward_key
+
     return admin_unit
