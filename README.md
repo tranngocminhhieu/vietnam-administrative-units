@@ -14,7 +14,7 @@ pip install --upgrade git+https://github.com/tranngocminhhieu/vietnam-administra
 ```
 
 
-### Parse address
+### Parse an address
 ```python
 from vietadminunits import parse_address
 
@@ -66,7 +66,7 @@ Output:
 Phú Diễn, Bắc Từ Liêm, Hà Nội
 ```
 
-### Get data from Vietnam administrative units
+### Get datasets
 
 ```python
 from vietadminunits import get_data
