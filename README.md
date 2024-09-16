@@ -77,6 +77,7 @@ df = pd.DataFrame(data)
 
 df.head()
 ```
+Output:
 ```text
 |    | province   | district   | ward      | long_province    | long_district   | long_ward        | short_district   | short_ward   | province_english   | district_english   | ward_english   | long_province_english   | long_district_english   | long_ward_english   | short_district_english   | short_ward_english   | district_level   | ward_level   | district_level_english   | ward_level_english   |
 |---:|:-----------|:-----------|:----------|:-----------------|:----------------|:-----------------|:-----------------|:-------------|:-------------------|:-------------------|:---------------|:------------------------|:------------------------|:--------------------|:-------------------------|:---------------------|:-----------------|:-------------|:-------------------------|:---------------------|
