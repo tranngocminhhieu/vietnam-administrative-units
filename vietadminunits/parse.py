@@ -121,7 +121,7 @@ def parse_address(address: str, level=3):
 
     admin_unit = AdministrativeUnit()
 
-    c_address = unidecode(address).lower().strip()
+    c_address = unidecode(address).lower()
 
     # Apply grammar replacements
     for pattern, replacement in grammar_replacements:
