@@ -110,6 +110,12 @@ province_patterns_3 = [re.compile(key) for key in province_keys_3]
 
 
 def parse_address(address: str, level=3):
+    '''
+    Parse an address to get Province, District, and Ward information.
+    :param address: The address would be best when following ward > district > province structure.
+    :param level: Level must be 1 (Province) or 2 (District) or 3 (Ward).
+    :return: AdministrativeUnit object with available data.
+    '''
     if level not in range(1,4):
         raise ValueError('Level must be 1 (Province) or 2 (District) or 3 (Ward).')
 
