@@ -1,13 +1,13 @@
 # Vietnam administrative units 🇻🇳
 
 
-## Vietnam administrative units dataset
+## Dataset
 Download: [vietnam_administrative_units.csv](data%2Foutput%2Fvietnam_administrative_units.csv).
 
 Last updated at: 2024-09-17.
-## vietadminunits package
+## Python package: vietadminunits
 
-### installation
+### Installation
 #### Install from GitHub
 ```shell
 pip install --upgrade git+https://github.com/tranngocminhhieu/vietnam-administrative-units.git
