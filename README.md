@@ -5,7 +5,7 @@ This project provides a dataset and Python package to parse and extract administ
 ## Dataset
 The dataset contains detailed information about administrative units in Vietnam. You can download it here:
 
-[vietnam_administrative_units.csv](data%2Foutput%2Fvietnam_administrative_units.csv)
+[**vietnam_administrative_units.csv**](data%2Foutput%2Fvietnam_administrative_units.csv)
 
 **Last updated at**: 2024-09-17.
 ## Python package: vietadminunits
