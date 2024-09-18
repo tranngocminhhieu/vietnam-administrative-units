@@ -8,6 +8,10 @@ The dataset contains detailed information about administrative units in Vietnam.
 [**vietnam_administrative_units.csv**](https://github.com/tranngocminhhieu/vietnam-administrative-units/blob/main/data/output/vietnam_administrative_units.csv)
 
 **Last updated at**: 2024-09-17.
+
+- **Source**: Wikipedia, danhmuchanhchinhgso.gov.vn.
+- **Process**: Correcting typos, creating new fields.
+
 ## Python package: vietadminunits
 
 ### Installation
