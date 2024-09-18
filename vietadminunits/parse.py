@@ -92,7 +92,7 @@ class AdministrativeUnit:
 
 # Load data from pickle
 with pkg_resources.open_binary('vietadminunits.data', 'parse.pkl') as f:
-    duplicated_district_keys, duplicated_district_province_keys, duplicated_ward_keys, duplicated_ward_district_keys, province_keys_1, province_keys_2, province_keys_3, province_map, district_map, ward_map, double_check_provinces, double_check_districts, half_district_keys = pickle.load(f)
+    duplicated_district_keys, duplicated_district_province_keys, duplicated_ward_keys, duplicated_ward_district_keys, province_keys_1, province_keys_2, province_keys_3, province_map, district_map, ward_map, double_check_provinces, double_check_districts, half_district_keys, long_district_alphanumerics, unique_district_keys = pickle.load(f)
 
 
 def replace_from_right(s, old, new):
@@ -103,11 +103,12 @@ def replace_from_right(s, old, new):
 
 
 # Precompile replacement and province regex patterns
-grammar_replacements = [(re.compile(rf"\b{old}\b"), new) for old, new in [('qui', 'quy'), ('pak', 'pac'), ('hn', 'ha noi')]]
+grammar_replacements = [(re.compile(rf"\b{old}\b"), new) for old, new in [('qui', 'quy'), ('pak', 'pac'), ('hn', 'ha noi'), ('n\.t', 'nt')]]
 province_patterns_1 = re.compile(rf"{'|'.join(province_keys_1)}")
 province_patterns_2 = [re.compile(key) for key in province_keys_2]
 province_patterns_3 = [re.compile(key) for key in province_keys_3]
-
+long_district_alphanumeric_patterns = re.compile(rf"{'|'.join(long_district_alphanumerics)}")
+unique_district_key_patterns = re.compile(rf"{'|'.join(unique_district_keys)}")
 
 def parse_address(address: str, level=3):
     '''
@@ -130,22 +131,61 @@ def parse_address(address: str, level=3):
     # Removing space have to do after fixing grammar
     c_address = c_address.replace('-', '').replace("'", "").replace(' 0', ' ').replace(' ', '')
 
+    # # Find Province
+    # province_key = None
+    # results = province_patterns_1.search(c_address)
+    # if results:
+    #     province_key = results.group(0)
+    #
+    # if not results:
+    #     for pattern in province_patterns_2:
+    #         results = pattern.search(c_address)
+    #         if results:
+    #             province_key = results.group(0)
+    #             break
+    #
+    # if not results:
+    #     for pattern in province_patterns_3:
+    #         results = pattern.search(c_address)
+    #         if results:
+    #             province_key = results.group(0)
+    #             break
+    #
+    # if not results:
+    #     results = unique_district_key_patterns.search(c_address)
+    #     if results:
+    #         district_key = results.group(0)
+    #         province_key = unique_district_keys[district_key]
+
     # Find Province
-    results = province_patterns_1.search(c_address)
-    if not results:
+    province_key = None
+
+    # Check province_patterns_1 first
+    match = province_patterns_1.search(c_address)
+    if match:
+        province_key = match.group(0)
+    else:
+        # Check patterns in province_patterns_2
         for pattern in province_patterns_2:
-            results = pattern.search(c_address)
-            if results:
+            match = pattern.search(c_address)
+            if match:
+                province_key = match.group(0)
                 break
+        else:
+            # Check patterns in province_patterns_3
+            for pattern in province_patterns_3:
+                match = pattern.search(c_address)
+                if match:
+                    province_key = match.group(0)
+                    break
+            else:
+                # Check unique_district_key_patterns if no province_key found
+                match = unique_district_key_patterns.search(c_address)
+                if match:
+                    district_key = match.group(0)
+                    province_key = unique_district_keys.get(district_key)
 
-    if not results:
-        for pattern in province_patterns_3:
-            results = pattern.search(c_address)
-            if results:
-                break
-
-    if results:
-        province_key = results.group(0)
+    if province_key:
 
         if province_key in double_check_provinces:
             new_keys = double_check_provinces[province_key]
@@ -154,7 +194,9 @@ def parse_address(address: str, level=3):
                     province_key = new_key
                     break
 
-        c_address = replace_from_right(c_address, province_key, '')
+        if not long_district_alphanumeric_patterns.search(c_address):
+            c_address = replace_from_right(c_address, province_key, '')
+
         province_data = province_map[province_key]
         admin_unit.province = province_data['province']
         admin_unit.long_province = province_data['long_province']
