@@ -1,10 +1,13 @@
 # Vietnam administrative units 🇻🇳
 
+This project provides a dataset and Python package to parse and extract administrative units from Vietnamese addresses. It includes data for provinces, districts, and wards, with translations and various formats for both Vietnamese and English.
 
 ## Dataset
-Download: [vietnam_administrative_units.csv](data%2Foutput%2Fvietnam_administrative_units.csv).
+The dataset contains detailed information about administrative units in Vietnam. You can download it here:
 
-Last updated at: 2024-09-17.
+[vietnam_administrative_units.csv](data%2Foutput%2Fvietnam_administrative_units.csv)
+
+**Last updated at**: 2024-09-17.
 ## Python package: vietadminunits
 
 ### Installation
@@ -13,8 +16,18 @@ Last updated at: 2024-09-17.
 pip install --upgrade git+https://github.com/tranngocminhhieu/vietnam-administrative-units.git
 ```
 
+### Usage
 
-### Parse an address
+#### Parse an address
+
+- `address`: The address will give the best results when following the structure: ward > district > province.
+- `level`: Specify the administrative level to parse. Must be one of the following:
+  - 1 for Province.
+  - 2 for District.
+  - 3 for Ward (this is the most detailed level). 
+
+For best performance, if you only need to parse the province, set level = 1.
+
 ```python
 from vietadminunits import parse_address
 
@@ -24,7 +37,7 @@ admin_unit = parse_address(address=address, level=3)
 
 print(admin_unit)
 ```
-Output:
+Example Output
 ```text
 AdministrativeUnit:
 Attribute                      | Value                         
@@ -58,15 +71,7 @@ district_level_english         | District
 ward_level_english             | Ward                          
 ```
 
-```python
-print(admin_unit.ward, admin_unit.district, admin_unit.province, sep=', ')
-```
-Output:
-```text
-Phú Diễn, Bắc Từ Liêm, Hà Nội
-```
-
-### Get datasets
+#### Get datasets
 
 ```python
 from vietadminunits import get_data
@@ -77,7 +82,7 @@ df = pd.DataFrame(data)
 
 df.head()
 ```
-Output:
+Example Output
 ```text
 |    | province   | district   | ward      | long_province    | long_district   | long_ward        | short_district   | short_ward   | province_english   | district_english   | ward_english   | long_province_english   | long_district_english   | long_ward_english   | short_district_english   | short_ward_english   | district_level   | ward_level   | district_level_english   | ward_level_english   |
 |---:|:-----------|:-----------|:----------|:-----------------|:----------------|:-----------------|:-----------------|:-------------|:-------------------|:-------------------|:---------------|:------------------------|:------------------------|:--------------------|:-------------------------|:---------------------|:-----------------|:-------------|:-------------------------|:---------------------|
@@ -87,3 +92,6 @@ Output:
 |  3 | Hà Nội     | Ba Đình    | Cống Vị   | Thành phố Hà Nội | Quận Ba Đình    | Phường Cống Vị   | Ba Đình          | Cống Vị      | Ha Noi             | Ba Dinh            | Cong Vi        | Ha Noi City             | Ba Dinh District        | Cong Vi Ward        | Ba Dinh                  | Cong Vi              | Quận             | Phường       | District                 | Ward                 |
 |  4 | Hà Nội     | Ba Đình    | Liễu Giai | Thành phố Hà Nội | Quận Ba Đình    | Phường Liễu Giai | Ba Đình          | Liễu Giai    | Ha Noi             | Ba Dinh            | Lieu Giai      | Ha Noi City             | Ba Dinh District        | Lieu Giai Ward      | Ba Dinh                  | Lieu Giai            | Quận             | Phường       | District                 | Ward                 |
 ```
+
+## Contributing
+Contributions are welcome! If you find any issues or have suggestions for improvement, feel free to open a pull request or issue on the [GitHub repository](https://github.com/tranngocminhhieu/vietnam-administrative-units).
