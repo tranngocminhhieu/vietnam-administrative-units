@@ -185,14 +185,21 @@ def parse_address(address: str, level=3):
         if not (province_key in duplicated_district_province_keys and district_key in duplicated_district_keys):
             district_entry = district_data[next(iter(district_data))]
         else:
-            if re.search(r'thanhpho|city', c_address):
+            if re.search(r'thanhpho|city|tp\.', c_address):
                 district_level = 'City'
-            elif re.search(r'thixa|town', c_address):
+            elif re.search(r'thixa|town|tx\.', c_address):
                 district_level = 'Town'
-            elif re.search(r'huyen|district', c_address):
+            elif re.search(r'huyen|district|h\.', c_address):
                 district_level = 'District'
             else:
-                district_level = duplicated_district_keys[district_key]
+                district_level = duplicated_district_keys[district_key]['default']
+
+                levels = duplicated_district_keys[district_key]['levels']
+                for level in levels:
+                    ward_keys = levels[level]
+                    if re.search(rf"{'|'.join(ward_keys)}", c_address):
+                        district_level = level
+                        break
 
             district_entry = district_data[district_level]
 
@@ -226,11 +233,11 @@ def parse_address(address: str, level=3):
         if not (district_key in duplicated_ward_district_keys and ward_key in duplicated_ward_keys):
             ward_entry = ward_data[next(iter(ward_data))]
         else:
-            if re.search(r'xa|Commune', c_address):
+            if re.search(r'xa|Commune|x\.', c_address):
                 ward_level = 'Commune'
-            elif re.search(r'phuong|ward', c_address):
+            elif re.search(r'phuong|ward|p\.', c_address):
                 ward_level = 'Ward'
-            elif re.search(r'thitran|town', c_address):
+            elif re.search(r'thitran|town|tt\.', c_address):
                 ward_level = 'Town'
             else:
                 ward_level = duplicated_ward_keys[ward_key]
