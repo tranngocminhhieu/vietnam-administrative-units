@@ -113,7 +113,7 @@ def parse_address(address: str, level=3):
     '''
     Parse an address to get Province, District, and Ward information.
     :param address: The address would be best when following ward > district > province structure.
-    :param level: Level must be 1 (Province) or 2 (District) or 3 (Ward).
+    :param level: Level must be 1 (Province) or 2 (District) or 3 (Ward). For best performance, if you only need to parse the province, set level = 1.
     :return: AdministrativeUnit object with available data.
     '''
     if level not in range(1,4):
