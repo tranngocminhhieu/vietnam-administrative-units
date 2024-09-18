@@ -20,14 +20,6 @@ pip install --upgrade git+https://github.com/tranngocminhhieu/vietnam-administra
 
 #### Parse an address
 
-- `address`: The address will give the best results when following the structure: ward > district > province.
-- `level`: Specify the administrative level to parse. Must be one of the following:
-  - 1 for Province.
-  - 2 for District.
-  - 3 for Ward (this is the most detailed level). 
-
-For best performance, if you only need to parse the province, set level = 1.
-
 ```python
 from vietadminunits import parse_address
 
@@ -35,9 +27,23 @@ address = 'Cuối đường kiều mai, dự án bệnh viện ha�
 
 admin_unit = parse_address(address=address, level=3)
 
+province = admin_unit.province
+district = admin_unit.district
+ward = admin_unit.ward
+```
+
+- `address`: The address will give the best results when following the structure: ward > district > province.
+- `level`: Specify the administrative level to parse. Must be one of the following:
+  - 1 for Province.
+  - 2 for District.
+  - 3 for Ward. 
+
+For best performance, if you only need to parse the province, set `level = 1`.
+
+```python
 print(admin_unit)
 ```
-Example Output
+
 ```text
 AdministrativeUnit:
 Attribute                      | Value                         
@@ -78,11 +84,15 @@ from vietadminunits import get_data
 import pandas as pd
 
 data = get_data(fields='*')
-df = pd.DataFrame(data)
+district_data = get_data(fields='province, district')
+```
 
+- `fields`: A list, or a string.
+
+```python
+df = pd.DataFrame(data)
 df.head()
 ```
-Example Output
 ```text
 |    | province   | district   | ward      | long_province    | long_district   | long_ward        | short_district   | short_ward   | province_english   | district_english   | ward_english   | long_province_english   | long_district_english   | long_ward_english   | short_district_english   | short_ward_english   | district_level   | ward_level   | district_level_english   | ward_level_english   |
 |---:|:-----------|:-----------|:----------|:-----------------|:----------------|:-----------------|:-----------------|:-------------|:-------------------|:-------------------|:---------------|:------------------------|:------------------------|:--------------------|:-------------------------|:---------------------|:-----------------|:-------------|:-------------------------|:---------------------|
