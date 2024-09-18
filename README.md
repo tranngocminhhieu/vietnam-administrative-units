@@ -21,7 +21,7 @@ The dataset contains detailed information about administrative units in Vietnam.
 
 - **Source**: Wikipedia, danhmuchanhchinhgso.gov.vn.
 - **Process**: Correcting typos, creating new fields.
-- **Note**: With `district` and `ward`, default is short name, and long name when there are duplicated short name.
+- **Note**: With `district` and `ward` fields, default to short name, and long name when there are duplicated short names.
 
 ## Python package: vietadminunits
 
