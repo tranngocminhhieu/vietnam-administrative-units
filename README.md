@@ -5,7 +5,7 @@ This project provides a dataset and Python package to parse and extract administ
 ## Dataset
 The dataset contains detailed information about administrative units in Vietnam. You can download it here:
 
-[**vietnam_administrative_units.csv**](data%2Foutput%2Fvietnam_administrative_units.csv)
+[**vietnam_administrative_units.csv**](https://github.com/tranngocminhhieu/vietnam-administrative-units/blob/main/data/output/vietnam_administrative_units.csv)
 
 **Last updated at**: 2024-09-17.
 ## Python package: vietadminunits
@@ -30,6 +30,7 @@ admin_unit = parse_address(address=address, level=3)
 province = admin_unit.province
 district = admin_unit.district
 ward = admin_unit.ward
+# ... and more attributes
 ```
 
 - `address`: The address will give the best results when following the structure: ward > district > province.
