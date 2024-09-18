@@ -92,7 +92,7 @@ class AdministrativeUnit:
 
 # Load data from pickle
 with pkg_resources.open_binary('vietadminunits.data', 'parse.pkl') as f:
-    duplicated_district_keys, duplicated_district_province_keys, duplicated_ward_keys, duplicated_ward_district_keys, province_keys_1, province_keys_2, province_keys_3, province_map, district_map, ward_map, double_check_provinces, double_check_districts = pickle.load(f)
+    duplicated_district_keys, duplicated_district_province_keys, duplicated_ward_keys, duplicated_ward_district_keys, province_keys_1, province_keys_2, province_keys_3, province_map, district_map, ward_map, double_check_provinces, double_check_districts, half_district_keys = pickle.load(f)
 
 
 def replace_from_right(s, old, new):
@@ -176,6 +176,15 @@ def parse_address(address: str, level=3):
             new_keys = double_check_districts[district_key]
             for new_key in new_keys:
                 if new_key in c_address and c_address.find(new_key) > c_address.find(district_key):
+                    district_key = new_key
+                    break
+
+        if district_key in half_district_keys:
+            tmp_address = replace_from_right(c_address, district_key, '')
+            new_keys = half_district_keys[district_key]
+            for new_key in new_keys:
+                ward_keys = new_keys[new_key]
+                if re.search(rf"{'|'.join(ward_keys)}", tmp_address):
                     district_key = new_key
                     break
 
