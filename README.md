@@ -99,13 +99,27 @@ ward_level_english             | Ward
 from vietadminunits import get_data
 import pandas as pd
 
-data = get_data(fields='*')
+full_data = get_data(fields='*')
 district_data = get_data(fields='province, district')
 
-df = pd.DataFrame(data)
+district_df = pd.DataFrame(district_data)
 ```
 
 - `fields`: A list, or a string.
+
+```python
+district_df.head()
+```
+
+```text
+|    | province   | district   |
+|---:|:-----------|:-----------|
+|  0 | Hà Nội     | Ba Đình    |
+|  1 | Hà Nội     | Hoàn Kiếm  |
+|  2 | Hà Nội     | Tây Hồ     |
+|  3 | Hà Nội     | Long Biên  |
+|  4 | Hà Nội     | Cầu Giấy   |
+```
 
 ## Contributing
 Contributions are welcome! If you find any issues or have suggestions for improvement, feel free to open a pull request or issue on the [GitHub repository](https://github.com/tranngocminhhieu/vietnam-administrative-units).
