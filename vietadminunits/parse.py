@@ -110,6 +110,19 @@ province_patterns_3 = [re.compile(key) for key in province_keys_3]
 long_district_alphanumeric_patterns = re.compile(rf"{'|'.join(long_district_alphanumerics)}")
 unique_district_key_patterns = re.compile(rf"{'|'.join(unique_district_keys)}")
 
+
+# Correct 'p' and 'q' in one pass
+# People can give P2, Q5, etc. We want to parse it as district and ward, but some streets have exactly like that.
+# So we need to correct it to P.2, Q.5, etc.
+def correct_abbreviation(c_address, abbr):
+    pattern = rf'{abbr}\d{{1,2}}'
+    match = re.search(pattern, c_address)
+    if match:
+        old_text = match.group()
+        if not re.search(rf'duong\s?{abbr}\d{{1,2}}|d\.\s?{abbr}\d{{1,2}}', c_address):
+            c_address = c_address.replace(old_text, old_text.replace(abbr, f'{abbr}.'))
+    return c_address
+
 def parse_address(address: str, level=3):
     '''
     Parse an address to get Province, District, and Ward information.
@@ -127,6 +140,8 @@ def parse_address(address: str, level=3):
     # Apply grammar replacements
     for pattern, replacement in grammar_replacements:
         c_address = pattern.sub(replacement, c_address)
+    c_address = correct_abbreviation(c_address, 'p')
+    c_address = correct_abbreviation(c_address, 'q')
 
     # Removing space have to do after fixing grammar
     c_address = c_address.replace('-', '').replace("'", "").replace(' 0', ' ').replace(' ', '')
