@@ -1,5 +1,7 @@
 # Vietnam administrative units 🇻🇳
 
+![ban-do-63-tinh-thanh-va-co-viet-nam.jpg](data%2Fmedia%2Fban-do-63-tinh-thanh-va-co-viet-nam.jpg)
+
 This project provides a dataset and Python package to parse and extract administrative units from Vietnamese addresses. It includes data for provinces, districts, and wards, with translations and various formats for both Vietnamese and English.
 
 ## Dataset
