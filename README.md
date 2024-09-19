@@ -38,7 +38,7 @@ pip install --upgrade git+https://github.com/tranngocminhhieu/vietnam-administra
 ```python
 from vietadminunits import parse_address
 
-address = 'Cuối đường kiều mai, dự án bệnh viện hạnh phúc phường phú diễn quận bắc từ liêm HN'
+address = 'p2 q5'
 
 admin_unit = parse_address(address=address, level=3)
 
@@ -64,27 +64,27 @@ print(admin_unit)
 AdministrativeUnit:
 Attribute                      | Value                         
 --------------------------------------------------------------
-province                       | Hà Nội                        
-district                       | Bắc Từ Liêm                   
-ward                           | Phú Diễn                      
+province                       | Hồ Chí Minh                   
+district                       | Quận 5                        
+ward                           | Phường 2                      
 --------------------------------------------------------------
-long_province                  | Thành phố Hà Nội              
-long_district                  | Quận Bắc Từ Liêm              
-long_ward                      | Phường Phú Diễn               
+long_province                  | Thành phố Hồ Chí Minh         
+long_district                  | Quận 5                        
+long_ward                      | Phường 2                      
 --------------------------------------------------------------
-short_district                 | Bắc Từ Liêm                   
-short_ward                     | Phú Diễn                      
+short_district                 | Quận 5                        
+short_ward                     | Phường 2                      
 --------------------------------------------------------------
-province_english               | Ha Noi                        
-district_english               | Bac Tu Liem                   
-ward_english                   | Phu Dien                      
+province_english               | Ho Chi Minh                   
+district_english               | District 5                    
+ward_english                   | Ward 2                        
 --------------------------------------------------------------
-long_province_english          | Ha Noi City                   
-long_district_english          | Bac Tu Liem District          
-long_ward_english              | Phu Dien Ward                 
+long_province_english          | Ho Chi Minh City              
+long_district_english          | District 5                    
+long_ward_english              | Ward 2                        
 --------------------------------------------------------------
-short_district_english         | Bac Tu Liem                   
-short_ward_english             | Phu Dien                      
+short_district_english         | District 5                    
+short_ward_english             | Ward 2                        
 --------------------------------------------------------------
 district_level                 | Quận                          
 ward_level                     | Phường                        
