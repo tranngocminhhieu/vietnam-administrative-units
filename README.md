@@ -7,6 +7,7 @@ The dataset contains detailed information about administrative units in Vietnam.
 
 [**vietnam_administrative_units.csv**](https://github.com/tranngocminhhieu/vietnam-administrative-units/blob/main/data/output/vietnam_administrative_units.csv)
 
+**Last updated at**: 2024-09-17.
 ```text
 | province   | district   | ward      | long_province    | long_district   | long_ward        | short_district   | short_ward   | province_english   | district_english   | ward_english   | long_province_english   | long_district_english   | long_ward_english   | short_district_english   | short_ward_english   | district_level   | ward_level   | district_level_english   | ward_level_english   |
 |:-----------|:-----------|:----------|:-----------------|:----------------|:-----------------|:-----------------|:-------------|:-------------------|:-------------------|:---------------|:------------------------|:------------------------|:--------------------|:-------------------------|:---------------------|:-----------------|:-------------|:-------------------------|:---------------------|
@@ -17,7 +18,6 @@ The dataset contains detailed information about administrative units in Vietnam.
 | Hà Nội     | Ba Đình    | Liễu Giai | Thành phố Hà Nội | Quận Ba Đình    | Phường Liễu Giai | Ba Đình          | Liễu Giai    | Ha Noi             | Ba Dinh            | Lieu Giai      | Ha Noi City             | Ba Dinh District        | Lieu Giai Ward      | Ba Dinh                  | Lieu Giai            | Quận             | Phường       | District                 | Ward                 |
 ```
 
-**Last updated at**: 2024-09-17.
 
 - **Source**: Wikipedia, danhmuchanhchinhgso.gov.vn.
 - **Process**: Correcting typos, creating new fields.
