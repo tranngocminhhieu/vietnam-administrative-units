@@ -131,41 +131,16 @@ def parse_address(address: str, level=3):
     # Removing space have to do after fixing grammar
     c_address = c_address.replace('-', '').replace("'", "").replace(' 0', ' ').replace(' ', '')
 
-    # # Find Province
-    # province_key = None
-    # results = province_patterns_1.search(c_address)
-    # if results:
-    #     province_key = results.group(0)
-    #
-    # if not results:
-    #     for pattern in province_patterns_2:
-    #         results = pattern.search(c_address)
-    #         if results:
-    #             province_key = results.group(0)
-    #             break
-    #
-    # if not results:
-    #     for pattern in province_patterns_3:
-    #         results = pattern.search(c_address)
-    #         if results:
-    #             province_key = results.group(0)
-    #             break
-    #
-    # if not results:
-    #     results = unique_district_key_patterns.search(c_address)
-    #     if results:
-    #         district_key = results.group(0)
-    #         province_key = unique_district_keys[district_key]
-
     # Find Province
     province_key = None
 
-    # Check province_patterns_1 first
+    # Check province_patterns_1 first, these are unique province_keys
     match = province_patterns_1.search(c_address)
     if match:
         province_key = match.group(0)
     else:
         # Check patterns in province_patterns_2
+        # these province_keys are the same some district_keys. Use loop to prioritize some province_key.
         for pattern in province_patterns_2:
             match = pattern.search(c_address)
             if match:
@@ -173,6 +148,7 @@ def parse_address(address: str, level=3):
                 break
         else:
             # Check patterns in province_patterns_3
+            # these province_keys are the same some ward_keys. Use loop to prioritize some province_key.
             for pattern in province_patterns_3:
                 match = pattern.search(c_address)
                 if match:
@@ -186,7 +162,8 @@ def parse_address(address: str, level=3):
                     province_key = unique_district_keys.get(district_key)
 
     if province_key:
-
+        # Some district_keys are the same province_key of other provinces, It causes wrong detecting province_key. Eg: Thái Nguyên, Quảng Ngãi, Bình Định have Bình Thuận district.
+        # We will do double-check for some province, If we find-out a new province_key placed after current province_key then choose the new province_key
         if province_key in double_check_provinces:
             new_keys = double_check_provinces[province_key]
             for new_key in new_keys:
@@ -194,6 +171,8 @@ def parse_address(address: str, level=3):
                     province_key = new_key
                     break
 
+        # Normally, We will remove province_key in the address from right-to-left, this help avoid wrong detecting district. Eg: Huyện Lắk, Tỉnh Đắk Lắk; Thành phố Huế, Tỉnh Thừa Thiên Huế.
+        # But to support "Find province from district" feature, we will ignore for some long district. Eg: Thành phố Thanh Hóa
         if not long_district_alphanumeric_patterns.search(c_address):
             c_address = replace_from_right(c_address, province_key, '')
 
@@ -214,6 +193,8 @@ def parse_address(address: str, level=3):
     if district_results:
         district_key = district_results.group(0)
 
+        # Some ward_keys are the same district_key of other districts. Eg: Thanh Trì, Hà Nội và Thanh Trì, Hoàng Mai, Hà Nội
+        # We will do double-check for some districts, If we find-out a new district_key that placed after current district_key then choose the new district_key
         if district_key in double_check_districts:
             new_keys = double_check_districts[district_key]
             for new_key in new_keys:
@@ -221,6 +202,9 @@ def parse_address(address: str, level=3):
                     district_key = new_key
                     break
 
+        # Due to wrong typo. Eg: "Nam Từ Liêm", "Bắc Từ Liêm" are correctly, but people can give "Từ Liêm" only. More eg: Bắc Trà My, Nam Trà My; Gò Công Đông, Gò Công Tây, Gò Công.
+        # We will use their ward_keys to choose the true district_key
+        # If not found true district_key, don't worry, we added half district keys as alias district_key in the district_map, thus we have default district.
         if district_key in half_district_keys:
             tmp_address = replace_from_right(c_address, district_key, '')
             new_keys = half_district_keys[district_key]
@@ -232,9 +216,12 @@ def parse_address(address: str, level=3):
 
         district_data = district_keys[district_key]
 
-        # Help avoid wrong data input for unique districts in a province
+        # To avoid wrong data input for unique districts in a province, just get the first item
         if not (province_key in duplicated_district_province_keys and district_key in duplicated_district_keys):
             district_entry = district_data[next(iter(district_data))]
+
+        # With duplicated district_keys in a province, we need to find the prefix (suffix) to choose the district level.
+        # This problem only occurs with Thành phố, Thị xã, Huyện.
         else:
             if re.search(r'thanhpho|city|tp\.', c_address):
                 district_level = 'City'
@@ -243,8 +230,10 @@ def parse_address(address: str, level=3):
             elif re.search(r'huyen|district|h\.', c_address):
                 district_level = 'District'
             else:
+                # If level is not found, we have default level based on Google Trend
                 district_level = duplicated_district_keys[district_key]['default']
 
+                # But we can try one more time, use ward_keys in each level to find the true district_key
                 levels = duplicated_district_keys[district_key]['levels']
                 for level in levels:
                     ward_keys = levels[level]
@@ -271,7 +260,7 @@ def parse_address(address: str, level=3):
     # Find ward
     ward_keys = ward_map[admin_unit.province_english][admin_unit.district_english]
 
-    # Some districts do not have a ward, for instance: Huyện Bạch Long Vĩ, Thành phố Hải Phòng
+    # Some districts do not have a ward. Eg: Huyện Bạch Long Vĩ, Thành phố Hải Phòng. Return object.
     if not ward_keys:
         return admin_unit
 
@@ -281,8 +270,12 @@ def parse_address(address: str, level=3):
         ward_key = ward_results.group(0)
         ward_data = ward_keys[ward_key]
 
+        # To avoid wrong data input for unique wards in a district, just get the first item
         if not (district_key in duplicated_ward_district_keys and ward_key in duplicated_ward_keys):
             ward_entry = ward_data[next(iter(ward_data))]
+
+        # With duplicated ward_keys in a district, we need to find the prefix (suffix) to choose the ward level.
+        # This problem only occurs with Xã, Phường, Thị Trấn.
         else:
             if re.search(r'xa|Commune|x\.', c_address):
                 ward_level = 'Commune'
@@ -291,6 +284,7 @@ def parse_address(address: str, level=3):
             elif re.search(r'thitran|town|tt\.', c_address):
                 ward_level = 'Town'
             else:
+                # If level is not found, we have default level based on Google Trend
                 ward_level = duplicated_ward_keys[ward_key]
 
             ward_entry = ward_data[ward_level]
