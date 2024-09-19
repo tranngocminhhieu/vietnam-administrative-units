@@ -111,9 +111,8 @@ long_district_alphanumeric_patterns = re.compile(rf"{'|'.join(long_district_alph
 unique_district_key_patterns = re.compile(rf"{'|'.join(unique_district_keys)}")
 
 
-# Correct 'p' and 'q' in one pass
-# People can give P2, Q5, etc. We want to parse it as district and ward, but some streets have exactly like that.
-# So we need to correct it to P.2, Q.5, etc.
+# People can give P2, Q5, etc. We want to parse it as district and ward, but some streets have name exactly like that.
+# So we need to correct it to P.2, Q.5, ... when they are not a street name.
 def correct_abbreviation(c_address, abbr):
     pattern = rf'{abbr}\d{{1,2}}'
     match = re.search(pattern, c_address)
