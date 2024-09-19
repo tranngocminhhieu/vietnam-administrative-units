@@ -52,9 +52,8 @@ ward = admin_unit.ward
 - `level`: Specify the administrative level to parse. Must be one of the following:
   - `1` for Province.
   - `2` for District.
-  - `3` for Ward. 
-
-For best performance, if you only need to parse the province, set `level = 1`.
+  - `3` for Ward.
+  - For best performance, if you only need to parse the province, set `level = 1`.
 
 ```python
 print(admin_unit)
