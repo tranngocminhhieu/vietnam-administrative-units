@@ -50,9 +50,9 @@ ward = admin_unit.ward
 
 - `address`: The address will give the best results when following the structure: ward > district > province.
 - `level`: Specify the administrative level to parse. Must be one of the following:
-  - 1 for Province.
-  - 2 for District.
-  - 3 for Ward. 
+  - `1` for Province.
+  - `2` for District.
+  - `3` for Ward. 
 
 For best performance, if you only need to parse the province, set `level = 1`.
 
