@@ -162,7 +162,7 @@ def parse_address(address: str, level=3):
                     province_key = unique_district_keys.get(district_key)
 
     if province_key:
-        # Some district_keys are the same province_key of other provinces, It causes wrong detecting province_key. Eg: Thái Nguyên, Quảng Ngãi, Bình Định have Bình Thuận district.
+        # Some district_keys and ward_keys are the same province_key of other provinces, It causes wrong detecting province_key. Eg: Thái Nguyên, Quảng Ngãi, Bình Định have Bình Thuận district.
         # We will do double-check for some province, If we find-out a new province_key placed after current province_key then choose the new province_key
         if province_key in double_check_provinces:
             new_keys = double_check_provinces[province_key]
