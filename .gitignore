@@ -161,4 +161,4 @@ cython_debug/
 .gitattributes
 .DS_store
 data/testing/
-notebook/testing/
+notebook/testing/private/
