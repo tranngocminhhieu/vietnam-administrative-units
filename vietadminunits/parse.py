@@ -2,7 +2,6 @@ import re
 from unidecode import unidecode
 import pickle
 import importlib.resources as pkg_resources
-from tabulate import tabulate
 
 class AdministrativeUnit:
     def __init__(self,
