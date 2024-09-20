@@ -53,6 +53,31 @@ class AdministrativeUnit:
         self.district_key = district_key
         self.ward_key = ward_key
 
+
+    def to_dict(self):
+        return {
+            'province': self.province,
+            'district': self.district,
+            'ward': self.ward,
+            'long_province': self.long_province,
+            'long_district': self.long_district,
+            'long_ward': self.long_ward,
+            'short_district': self.short_district,
+            'short_ward': self.short_ward,
+            'province_english': self.province_english,
+            'district_english': self.district_english,
+            'ward_english': self.ward_english,
+            'long_province_english': self.long_province_english,
+            'long_district_english': self.long_district_english,
+            'long_ward_english': self.long_ward_english,
+            'short_district_english': self.short_district_english,
+            'short_ward_english': self.short_ward_english,
+            'district_level': self.district_level,
+            'ward_level': self.ward_level,
+            'district_level_english': self.district_level_english,
+            'ward_level_english': self.ward_level_english
+        }
+
     def __repr__(self):
         def safe_format(value):
             return value if value is not None else ""
@@ -107,9 +132,9 @@ grammar_replacements = [(re.compile(rf"\b{old}\b"), new) for old, new in [('qui'
 province_patterns_1 = re.compile(rf"{'|'.join(province_keys_1)}")
 province_patterns_2 = [re.compile(key) for key in province_keys_2]
 province_patterns_3 = [re.compile(key) for key in province_keys_3]
-long_district_alphanumeric_patterns = re.compile(rf"{'|'.join(long_district_alphanumerics)}")
-unique_district_key_patterns = re.compile(rf"{'|'.join(unique_district_keys)}")
-not_unique_district_key_patterns = re.compile(rf"{'|'.join(not_unique_district_keys)}")
+long_district_alphanumeric_patterns = re.compile(rf"{'|'.join(long_district_alphanumerics)}".replace('.', '\.'))
+unique_district_key_patterns = re.compile(rf"{'|'.join(unique_district_keys)}".replace('.', '\.'))
+not_unique_district_key_patterns = re.compile(rf"{'|'.join(not_unique_district_keys)}".replace('.', '\.'))
 
 
 # People can give P2, Q5, etc. We want to parse it as district and ward, but some streets have name exactly like that.
@@ -150,43 +175,48 @@ def parse_address(address: str, level=3):
     province_key = None
 
     # Check province_patterns_1 first, these are unique province_keys
-    match = province_patterns_1.search(c_address)
-    if match:
-        province_key = match.group(0)
+    matches = province_patterns_1.findall(c_address)
+    if matches:
+        province_key = matches[-1]
     else:
         # Check patterns in province_patterns_2
         # these province_keys are the same some district_keys. Use loop to prioritize some province_key.
         for pattern in province_patterns_2:
-            match = pattern.search(c_address)
-            if match:
-                province_key = match.group(0)
+            matches = pattern.findall(c_address)
+            if matches:
+                province_key = matches[-1]
                 break
         else:
             # Check patterns in province_patterns_3
             # these province_keys are the same some ward_keys. Use loop to prioritize some province_key.
             for pattern in province_patterns_3:
-                match = pattern.search(c_address)
-                if match:
-                    province_key = match.group(0)
+                matches = pattern.findall(c_address)
+                if matches:
+                    province_key = matches[-1]
                     break
             else:
                 # Check unique_district_key_patterns if no province_key found
-                match = unique_district_key_patterns.search(c_address)
-                if match:
-                    district_key = match.group(0)
+                matches = unique_district_key_patterns.findall(c_address)
+                if matches:
+                    district_key = matches[-1]
                     province_key = unique_district_keys.get(district_key)
                 else:
                     # Check not_unique_district_key_patterns if no province_key found
                     # But a ward_key must be found in the address
-                    match = not_unique_district_key_patterns.search(c_address)
-                    if match:
-                        district_key = match.group(0)
-                        province_keys = not_unique_district_keys[district_key]
-                        for tmp_province_key in province_keys:
-                            tmp_ward_keys = province_keys[tmp_province_key]
-                            if re.search(rf"{'|'.join(tmp_ward_keys)}", c_address):
-                                province_key = tmp_province_key
-                                break
+                    count = 0
+                    while not province_key and count <= 2:
+                        count += 1
+                        matches = not_unique_district_key_patterns.findall(c_address)
+                        if matches:
+                            district_key = matches[-1]
+                            province_keys = not_unique_district_keys[district_key]
+                            for tmp_province_key in province_keys:
+                                tmp_ward_keys = province_keys[tmp_province_key]
+                                if re.search(rf"{'|'.join(tmp_ward_keys)}".replace('.', '\.'), c_address):
+                                    province_key = tmp_province_key
+                                    break
+                                else:
+                                    c_address = c_address.replace(district_key, '', 1)
 
     if province_key:
         # Some district_keys and ward_keys are the same province_key of other provinces, It causes wrong detecting province_key. Eg: Thái Nguyên, Quảng Ngãi, Bình Định have Bình Thuận district.
@@ -216,9 +246,10 @@ def parse_address(address: str, level=3):
 
     # Find District
     district_keys = district_map[admin_unit.province_english]
-    district_results = re.search(rf"{'|'.join(district_keys)}", c_address)
+    # Sử dụng lookahead (?=...), regex sẽ không “tiêu thụ” các ký tự đã khớp, do đó cho phép tìm thêm các khớp chồng lấp
+    district_results = re.search(rf"{'|'.join(district_keys)}".replace('.', '\.'), c_address)
     if district_results:
-        district_key = district_results.group(0)
+        district_key = district_results.group()
 
         # Some ward_keys are the same district_key of other districts. Eg: Thanh Trì, Hà Nội và Thanh Trì, Hoàng Mai, Hà Nội
         # We will do double-check for some districts, If we find-out a new district_key that placed after current district_key then choose the new district_key
@@ -237,7 +268,7 @@ def parse_address(address: str, level=3):
             new_keys = half_district_keys[district_key]
             for new_key in new_keys:
                 ward_keys = new_keys[new_key]
-                if re.search(rf"{'|'.join(ward_keys)}", tmp_address):
+                if re.search(rf"{'|'.join(ward_keys)}".replace('.', '\.'), tmp_address):
                     district_key = new_key
                     break
 
@@ -264,11 +295,15 @@ def parse_address(address: str, level=3):
                 levels = duplicated_district_keys[district_key]['levels']
                 for level in levels:
                     ward_keys = levels[level]
-                    if re.search(rf"{'|'.join(ward_keys)}", c_address):
+                    if re.search(rf"{'|'.join(ward_keys)}".replace('.', '\.'), c_address):
                         district_level = level
                         break
 
             district_entry = district_data[district_level]
+
+        c_address = replace_from_right(c_address, district_key, '')
+        # print(c_address)
+        # print(district_results)
 
         admin_unit.district = district_entry['district']
         admin_unit.long_district = district_entry['long_district']
@@ -291,10 +326,10 @@ def parse_address(address: str, level=3):
     if not ward_keys:
         return admin_unit
 
-    ward_results = re.search(rf"{'|'.join(ward_keys)}", c_address)
+    ward_results = re.search(rf"{'|'.join(ward_keys)}".replace('.', '\.'), c_address)
 
     if ward_results:
-        ward_key = ward_results.group(0)
+        ward_key = ward_results.group()
         ward_data = ward_keys[ward_key]
 
         # To avoid wrong data input for unique wards in a district, just get the first item
