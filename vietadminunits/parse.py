@@ -92,7 +92,7 @@ class AdministrativeUnit:
 
 # Load data from pickle
 with pkg_resources.open_binary('vietadminunits.data', 'parse.pkl') as f:
-    duplicated_district_keys, duplicated_district_province_keys, duplicated_ward_keys, duplicated_ward_district_keys, province_keys_1, province_keys_2, province_keys_3, province_map, district_map, ward_map, double_check_provinces, double_check_districts, half_district_keys, long_district_alphanumerics, unique_district_keys = pickle.load(f)
+    duplicated_district_keys, duplicated_district_province_keys, duplicated_ward_keys, duplicated_ward_district_keys, province_keys_1, province_keys_2, province_keys_3, province_map, district_map, ward_map, double_check_provinces, double_check_districts, half_district_keys, long_district_alphanumerics, unique_district_keys , not_unique_district_keys = pickle.load(f)
 
 
 def replace_from_right(s, old, new):
@@ -109,6 +109,7 @@ province_patterns_2 = [re.compile(key) for key in province_keys_2]
 province_patterns_3 = [re.compile(key) for key in province_keys_3]
 long_district_alphanumeric_patterns = re.compile(rf"{'|'.join(long_district_alphanumerics)}")
 unique_district_key_patterns = re.compile(rf"{'|'.join(unique_district_keys)}")
+not_unique_district_key_patterns = re.compile(rf"{'|'.join(not_unique_district_keys)}")
 
 
 # People can give P2, Q5, etc. We want to parse it as district and ward, but some streets have name exactly like that.
@@ -174,6 +175,18 @@ def parse_address(address: str, level=3):
                 if match:
                     district_key = match.group(0)
                     province_key = unique_district_keys.get(district_key)
+                else:
+                    # Check not_unique_district_key_patterns if no province_key found
+                    # But a ward_key must be found in the address
+                    match = not_unique_district_key_patterns.search(c_address)
+                    if match:
+                        district_key = match.group(0)
+                        province_keys = not_unique_district_keys[district_key]
+                        for tmp_province_key in province_keys:
+                            tmp_ward_keys = province_keys[tmp_province_key]
+                            if re.search(rf"{'|'.join(tmp_ward_keys)}", c_address):
+                                province_key = tmp_province_key
+                                break
 
     if province_key:
         # Some district_keys and ward_keys are the same province_key of other provinces, It causes wrong detecting province_key. Eg: Thái Nguyên, Quảng Ngãi, Bình Định have Bình Thuận district.
