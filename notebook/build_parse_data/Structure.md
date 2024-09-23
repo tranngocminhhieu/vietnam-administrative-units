@@ -31,7 +31,7 @@
 
 # Part_2_alias:
 - DICT_alias_district_keys `{'Province English': {'alias district key': 'district key'}}`
-- DICT_half_district_keys `{'Province English': {'half district key': {'district key': ['ward key']}}}`
+- DICT_half_district_keys `{'Province English': {'half district key': {'default': 'district key', 'district_keys': {'district key': ['ward key']}}}}`
 
 # Part_3_double_check:
 - DICT_double_check_provinces `{'province key': ['province key', ...]}`

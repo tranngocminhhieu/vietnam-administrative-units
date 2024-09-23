@@ -83,35 +83,35 @@ class AdministrativeUnit:
 
         return (
             f"AdministrativeUnit:\n"
-            f"{'Attribute':<30} | {'Value':<30}\n"
-            f"{'-' * 62}\n"
-            f"{'province':<30} | {safe_format(self.province):<30}\n"
-            f"{'district':<30} | {safe_format(self.district):<30}\n"
-            f"{'ward':<30} | {safe_format(self.ward):<30}\n"
-            f"{'-' * 62}\n"
-            f"{'long_province':<30} | {safe_format(self.long_province):<30}\n"
-            f"{'long_district':<30} | {safe_format(self.long_district):<30}\n"
-            f"{'long_ward':<30} | {safe_format(self.long_ward):<30}\n"
-            f"{'-' * 62}\n"
-            f"{'short_district':<30} | {safe_format(self.short_district):<30}\n"
-            f"{'short_ward':<30} | {safe_format(self.short_ward):<30}\n"
-            f"{'-' * 62}\n"
-            f"{'province_english':<30} | {safe_format(self.province_english):<30}\n"
-            f"{'district_english':<30} | {safe_format(self.district_english):<30}\n"
-            f"{'ward_english':<30} | {safe_format(self.ward_english):<30}\n"
-            f"{'-' * 62}\n"
-            f"{'long_province_english':<30} | {safe_format(self.long_province_english):<30}\n"
-            f"{'long_district_english':<30} | {safe_format(self.long_district_english):<30}\n"
-            f"{'long_ward_english':<30} | {safe_format(self.long_ward_english):<30}\n"
-            f"{'-' * 62}\n"
-            f"{'short_district_english':<30} | {safe_format(self.short_district_english):<30}\n"
-            f"{'short_ward_english':<30} | {safe_format(self.short_ward_english):<30}\n"
-            f"{'-' * 62}\n"
-            f"{'district_level':<30} | {safe_format(self.district_level):<30}\n"
-            f"{'ward_level':<30} | {safe_format(self.ward_level):<30}\n"
-            f"{'-' * 62}\n"
-            f"{'district_level_english':<30} | {safe_format(self.district_level_english):<30}\n"
-            f"{'ward_level_english':<30} | {safe_format(self.ward_level_english):<30}\n")
+            f"{'Attribute':<25} | {'Value':<25}\n"
+            f"{'-' * 52}\n"
+            f"{'province':<25} | {safe_format(self.province):<25}\n"
+            f"{'district':<25} | {safe_format(self.district):<25}\n"
+            f"{'ward':<25} | {safe_format(self.ward):<25}\n"
+            f"{'-' * 52}\n"
+            f"{'long_province':<25} | {safe_format(self.long_province):<25}\n"
+            f"{'long_district':<25} | {safe_format(self.long_district):<25}\n"
+            f"{'long_ward':<25} | {safe_format(self.long_ward):<25}\n"
+            f"{'-' * 52}\n"
+            f"{'short_district':<25} | {safe_format(self.short_district):<25}\n"
+            f"{'short_ward':<25} | {safe_format(self.short_ward):<25}\n"
+            f"{'-' * 52}\n"
+            f"{'province_english':<25} | {safe_format(self.province_english):<25}\n"
+            f"{'district_english':<25} | {safe_format(self.district_english):<25}\n"
+            f"{'ward_english':<25} | {safe_format(self.ward_english):<25}\n"
+            f"{'-' * 52}\n"
+            f"{'long_province_english':<25} | {safe_format(self.long_province_english):<25}\n"
+            f"{'long_district_english':<25} | {safe_format(self.long_district_english):<25}\n"
+            f"{'long_ward_english':<25} | {safe_format(self.long_ward_english):<25}\n"
+            f"{'-' * 52}\n"
+            f"{'short_district_english':<25} | {safe_format(self.short_district_english):<25}\n"
+            f"{'short_ward_english':<25} | {safe_format(self.short_ward_english):<25}\n"
+            f"{'-' * 52}\n"
+            f"{'district_level':<25} | {safe_format(self.district_level):<25}\n"
+            f"{'ward_level':<25} | {safe_format(self.ward_level):<25}\n"
+            f"{'-' * 52}\n"
+            f"{'district_level_english':<25} | {safe_format(self.district_level_english):<25}\n"
+            f"{'ward_level_english':<25} | {safe_format(self.ward_level_english):<25}\n")
 
 def replace_from_right(s, old, new):
     pos = s.rfind(old)
@@ -230,12 +230,18 @@ def parse_address(address: str, level=3):
     c_address = correct_abbreviation(c_address, 'p')
     c_address = correct_abbreviation(c_address, 'q')
 
-    ## Drop the street part (Testing)
-    pattern = r',\s?(phuong|xa|thi\s?tran|p\.|x\.)\b'
-    match = re.search(pattern, c_address)
-    if match:
-        start = match.start()
+    ## Drop the street part for beatiful address cases
+    pattern_1 = r'\b(phuong|xa|thi\s?tran|p\.|x\.|tt\.)\b'
+    match_1 = re.search(pattern_1, c_address)
+
+    pattern_2 = r'\b(quan|huyen|thi\s?xa|thanh\s?pho|q\.|h\.|tx\.|tp\.?)\b'
+    match_2 = re.search(pattern_2, c_address)
+
+    if match_1 and match_2 and match_1.start() < match_2.start():
+        start = match_1.start()
         c_address = c_address[start:]
+
+
 
     ## Removing space have to do after fixing grammar
     c_address = c_address.replace('-', '').replace("'", "").replace(' 0', ' ').replace(' ', '')
@@ -380,9 +386,13 @@ def parse_address(address: str, level=3):
                 match = re.search(rf"{'|'.join(half_district_keys) or 'placeholder'}".replace('.', '\.'), tmp_address)
                 if match:
                     half_district_key = match.group()
+
+                    # Set default value
+                    district_key = half_district_keys[half_district_key]['default']
+
+                    # Try one more time based on ward_keys
                     tmp_district_keys = half_district_keys[half_district_key]
-                    # Remove half_district_key from address
-                    tmp_address = replace_from_right(c_address, half_district_key, '')
+                    tmp_address = replace_from_right(c_address, half_district_key, '') # Remove half_district_key from address
                     for tmp_district_key in tmp_district_keys:
                         tmp_ward_keys = tmp_district_keys[tmp_district_key]
                         if re.match(rf"{'|'.join(tmp_ward_keys)}".replace('.', '\.'), tmp_address):
