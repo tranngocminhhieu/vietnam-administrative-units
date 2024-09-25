@@ -3,8 +3,8 @@
 - DICT_long_district_alphanumerics `{'Province English': {'district alphanumeric': 'district key', ...}}`
 - DICT_long_ward_alphanumerics `{'Province English': {'District English': {'long ward alphanumeric': 'ward key'}}}` 
 
-- LIST_long_district_alphanumerics `['district alphanumeric', ...]`
-- LIST_long_ward_alphanumerics `['long ward alphanumeric', ...]`
+- LIST_safe_long_district_alphanumerics `['district alphanumeric', ...]`
+- LIST_safe_long_ward_alphanumerics `['long ward alphanumeric', ...]`
 
 - LIST_province_keys_1 `['short province key', ...]`
 - LIST_province_keys_2 `['short province key', ...]`
