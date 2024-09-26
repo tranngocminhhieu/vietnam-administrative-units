@@ -139,10 +139,10 @@ DICT_province_map = data['DICT_province_map']
 DICT_district_map = data['DICT_district_map']
 DICT_ward_map = data['DICT_ward_map']
 
-LIST_duplicated_district_province_keys = data['LIST_duplicated_district_province_keys']
+# LIST_duplicated_district_province_keys = data['LIST_duplicated_district_province_keys']
 DICT_duplicated_district_keys = data['DICT_duplicated_district_keys']
 
-LIST_duplicated_ward_district_keys = data['LIST_duplicated_ward_district_keys']
+# LIST_duplicated_ward_district_keys = data['LIST_duplicated_ward_district_keys']
 DICT_duplicated_ward_keys = data['DICT_duplicated_ward_keys']
 
 DICT_unique_long_district_alphanumerics = data['DICT_unique_long_district_alphanumerics']
@@ -187,16 +187,10 @@ PATTERN_alias_province_keys = re.compile(rf"{'|'.join(DICT_alias_province_keys) 
 grammar_replacements = [(re.compile(rf"\b{old}\b"), new) for old, new in [('qui', 'quy'), ('pak', 'pac'), ('hn', 'ha noi'), ('n\.t', 'nt'), ('xa\s?lo\s?ha\s?noi', ''), ('ki', 'ky'), ('duong\s?dien\s?bien\s?phu', '')]]
 
 
-# province_alphanumeric_patterns = re.compile(rf"{'|'.join(province_alphanumerics)}")
-# province_patterns_1 = re.compile(rf"{'|'.join(province_keys_1)}")
-# province_patterns_2 = [re.compile(key) for key in province_keys_2]
-# province_patterns_3 = [re.compile(key) for key in province_keys_3]
-# long_district_alphanumeric_patterns = re.compile(rf"{'|'.join(long_district_alphanumerics)}".replace('.', '\.'))
-# unique_district_key_patterns = re.compile(rf"{'|'.join(unique_district_keys)}".replace('.', '\.'))
-# not_unique_district_key_patterns = re.compile(rf"{'|'.join(not_unique_district_keys)}".replace('.', '\.'))
-#
-# alphanumeric_long_ward_patterns = re.compile(rf"{'|'.join(alphanumeric_long_wards)}")
 
+# Test
+DICT_double_check_inverted_provinces = data.get('DICT_double_check_inverted_provinces', {})
+DICT_double_check_inverted_districts = data.get('DICT_double_check_inverted_districts', {})
 
 
 
@@ -246,7 +240,7 @@ def parse_address(address: str, level=3):
 
     ## Removing space have to do after fixing grammar
     c_address = c_address.replace('-', '').replace("'", "").replace(' 0', ' ').replace(' ', '')
-
+    original_address = c_address
     # print('Clean address:', c_address)
 
 
@@ -257,7 +251,7 @@ def parse_address(address: str, level=3):
     # -- BEGIN Part 1 data --
     
     # Avoid wrong match. Eg: Phường Bình Thuận, Quận 7 -> Bình Thuận. Only works for long name.
-    tmp_address = PATTERN_safe_long_district_long_ward_alphanumerics .sub('', c_address)
+    tmp_address = PATTERN_safe_long_district_long_ward_alphanumerics.sub('', c_address)
     # print('Before Province:', tmp_address)
 
     # Check province_patterns_1 first, these are unique province_keys
@@ -350,13 +344,25 @@ def parse_address(address: str, level=3):
             if match:
                 province_key = match.group()
 
-            # We have used the last index of findall and the result is very good with "ward > district > province" structure.
-            # Wrong cases almost other structure, so don't need to check position of new_key
 
-            # for new_key in new_keys:
-            #     if new_key in c_address and c_address.find(new_key) > c_address.find(province_key):
-            #         province_key = new_key
-            #         break
+        elif province_key in DICT_double_check_inverted_provinces:
+            new_keys = DICT_double_check_inverted_provinces.get(province_key, {})
+            match = re.search(rf"{'|'.join(new_keys) or 'placeholder'}", c_address, flags=re.IGNORECASE)
+            if match:
+                tmp_province_key = match.group()
+
+                # This is a particular case
+                if province_key == 'thanhhoa' and tmp_province_key == 'longan' and 'longanh' in c_address:
+                    pass
+                else:
+
+                    ward_district_keys = DICT_double_check_inverted_provinces.get(province_key, {}).get(tmp_province_key, [])
+                    tmp_address = c_address.replace(tmp_province_key, '')
+                    for ward_district_key in ward_district_keys:
+                        pattern = r'(?=.*' + r')(?=.*'.join(ward_district_key) + r')' # ChatGPT help me
+                        if re.search(pattern, tmp_address):
+                            province_key = tmp_province_key
+
 
         # Normally, We will remove province_key in the address from right-to-left, this help avoid wrong detecting district. Eg: Huyện Lắk, Tỉnh Đắk Lắk; Thành phố Huế, Tỉnh Thừa Thiên Huế.
         # But to support "Find province from district" feature, we will ignore for some long district. Eg: Thành phố Thanh Hóa
@@ -377,34 +383,17 @@ def parse_address(address: str, level=3):
                             c_address = replace_from_right(c_address, province_key, '')
                     else:
                         c_address = replace_from_right(c_address, province_key, '')
+                elif province_alphanumeric == 'tinhvinhphuc':
+                    if 'dongtinh' in c_address:
+                        c_address = replace_from_right(c_address, province_key, '')
+                    else:
+                        c_address = replace_from_right(c_address, province_alphanumeric, '')
                 else:
                     c_address = replace_from_right(c_address, province_alphanumeric, '')
 
             else:
                 c_address = replace_from_right(c_address, province_key, '')
 
-
-            #
-            # # Xác định chuỗi cần thay thế ban đầu là province_key
-            # replace_key = province_key
-            #
-            # if province_alphanumeric:
-            #
-            #     if province_alphanumeric == 'tinhhatinh' and re.search(r'thachhatinh|lochatinh', c_address, flags=re.IGNORECASE):
-            #         replace_key = province_alphanumeric
-            #
-            #     # tinhthosontinhquangngai
-            #     elif province_alphanumeric == 'tinhquangngai':
-            #         # tinhbinhsontinhquangngai
-            #         if re.search(r'binhsontinh|lysontinh', c_address, flags=re.IGNORECASE):
-            #             # Nếu không có 'tinhbinh' trong c_address, thay bằng province_alphanumeric, nếu không thay bằng province_key
-            #             replace_key = province_alphanumeric if 'tinhbinh' not in c_address else province_key
-            #         else:
-            #             replace_key = province_key
-            #     else:
-            #         replace_key = province_alphanumeric
-            #
-            # c_address = replace_from_right(c_address, replace_key, '')
 
             # print('After Province', c_address)
         province_data = DICT_province_map[province_key]
@@ -470,20 +459,17 @@ def parse_address(address: str, level=3):
         # We will do double-check for some districts, If we find-out a new district_key that placed after current district_key then choose the new district_key
         if district_key in DICT_double_check_districts.get(admin_unit.province_english, {}):
             new_keys = DICT_double_check_districts.get(admin_unit.province_english, {}).get(district_key, [])
-            match = re.search(rf"{'|'.join(new_keys) or 'placeholder'}", c_address)
+            match = re.search(rf"{'|'.join(new_keys) or 'placeholder'}", original_address)
             if match:
                 district_key = match.group()
-
-            # for new_key in new_keys:
-            #     if new_key in c_address and c_address.find(new_key) > c_address.find(district_key):
-            #         district_key = new_key
-            #         break
 
 
         district_data = district_keys[district_key]
 
+        duplicated_district_keys = DICT_duplicated_district_keys[admin_unit.province_english]
+
         # To avoid wrong data input for unique districts in a province, just get the first item
-        if not (province_key in LIST_duplicated_district_province_keys and district_key in DICT_duplicated_district_keys):
+        if not (district_key in duplicated_district_keys):
             district_entry = district_data[next(iter(district_data))]
 
         # With duplicated district_keys in a province, we need to find the prefix (suffix) to choose the district level.
@@ -497,10 +483,10 @@ def parse_address(address: str, level=3):
                 district_level = 'District'
             else:
                 # If level is not found, we have default level based on Google Trend
-                district_level = DICT_duplicated_district_keys[district_key]['default']
+                district_level = duplicated_district_keys[district_key]['default']
 
                 # But we can try one more time, use ward_keys in each level to find the true district_key
-                levels = DICT_duplicated_district_keys[district_key]['levels']
+                levels = duplicated_district_keys[district_key]['levels']
                 for level in levels:
                     ward_keys = levels[level]
                     if re.search(rf"{'|'.join(ward_keys)}".replace('.', '\.'), c_address):
@@ -546,8 +532,9 @@ def parse_address(address: str, level=3):
     if ward_key:
         ward_data = ward_keys[ward_key]
 
+        duplicated_ward_keys = DICT_duplicated_ward_keys.get(admin_unit.province_english, {}).get(admin_unit.district_english, {})
         # To avoid wrong data input for unique wards in a district, just get the first item
-        if not (district_key in LIST_duplicated_ward_district_keys and ward_key in DICT_duplicated_ward_keys):
+        if not (ward_key in duplicated_ward_keys):
             ward_entry = ward_data[next(iter(ward_data))]
 
         # With duplicated ward_keys in a district, we need to find the prefix (suffix) to choose the ward level.
@@ -561,7 +548,7 @@ def parse_address(address: str, level=3):
                 ward_level = 'Town'
             else:
                 # If level is not found, we have default level based on Google Trend
-                ward_level = DICT_duplicated_ward_keys[ward_key]
+                ward_level = duplicated_ward_keys[ward_key]
 
             ward_entry = ward_data[ward_level]
 
