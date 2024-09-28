@@ -138,6 +138,7 @@ LIST_safe_long_ward_alphanumerics = data['LIST_safe_long_ward_alphanumerics']
 DICT_province_map = data['DICT_province_map']
 DICT_district_map = data['DICT_district_map']
 DICT_ward_map = data['DICT_ward_map']
+DICT_duplicated_ward_map = data['DICT_duplicated_ward_map']
 
 # LIST_duplicated_district_province_keys = data['LIST_duplicated_district_province_keys']
 DICT_duplicated_district_keys = data['DICT_duplicated_district_keys']
@@ -370,8 +371,18 @@ def parse_address(address: str, level=3):
 
         # Normally, We will remove province_key in the address from right-to-left, this help avoid wrong detecting district. Eg: Huyện Lắk, Tỉnh Đắk Lắk; Thành phố Huế, Tỉnh Thừa Thiên Huế.
         # But to support "Find province from district" feature, we will ignore for some long district. Eg: Thành phố Thanh Hóa
+        # if not PATTERN_contains_province_key_long_district_alphanumerics.search(c_address):
+        #     c_address = replace_from_right(c_address, province_key, '')
+
         if not PATTERN_contains_province_key_long_district_alphanumerics.search(c_address):
             c_address = replace_from_right(c_address, province_key, '')
+
+
+        # xathanhminh,tinhdienbien,dienbienphu -> remove dienbien -> can not match dienbienphu
+        dienbien_match = re.search(r'dienbienphu|dienbiendong', original_address)
+        if dienbien_match:
+            dienbien = dienbien_match.group()
+            c_address += dienbien
 
             # # Case: tinhthosontinhquangngai
             # if province_alphanumeric:
@@ -511,9 +522,9 @@ def parse_address(address: str, level=3):
                 for level in levels:
                     ward_keys = levels[level]
 
-                    # District: kyphu, Town: kyphuong
-                    if district_key == 'kyanh' and level == 'District':
-                        ward_keys = ['kyphu[^o]' if key == 'kyphu' else key for key in ward_keys]
+                    # # District: kyphu, Town: kyphuong
+                    # if district_key == 'kyanh' and level == 'District':
+                    #     ward_keys = ['kyphu[^o]' if key == 'kyphu' else key for key in ward_keys]
 
                     if re.search(rf"{'|'.join(ward_keys)}".replace('.', '\.'), c_address):
                         district_level = level
@@ -578,36 +589,67 @@ def parse_address(address: str, level=3):
 
         duplicated_ward_keys = DICT_duplicated_ward_keys.get(admin_unit.province_english, {}).get(admin_unit.district_english, {})
         # To avoid wrong data input for unique wards in a district, just get the first item
+
+        ward_entry = None
         if not (ward_key in duplicated_ward_keys):
             ward_entry = ward_data[next(iter(ward_data))]
 
+
+        else:
+            short_names = duplicated_ward_keys.get(ward_key, {})
+            short_name = None
+            if len(short_names) == 1:
+                short_name = short_names[next(iter(short_names))]
+            else:
+                match = re.search(rf"{'|'.join(short_names)}", address.title(), flags=re.IGNORECASE)
+                if match:
+                    short_name = match.group()
+
+            ward_level = None
+            if short_name:
+                if re.search(r'xa|Commune|x\.', c_address):
+                    ward_level = 'Commune'
+                elif re.search(r'phuong|ward|p\.', c_address):
+                    ward_level = 'Ward'
+                elif re.search(r'thitran|town|tt\.', c_address):
+                    ward_level = 'Town'
+                else:
+                    ward_level = short_names.get(short_name, None)
+
+            if short_name and ward_level:
+                ward_entry = DICT_duplicated_ward_map.get(admin_unit.province_english, {}).get(admin_unit.district_english, {}).get(short_name, {}).get(ward_level, {})
+
+
+
+
         # With duplicated ward_keys in a district, we need to find the prefix (suffix) to choose the ward level.
         # This problem only occurs with Xã, Phường, Thị Trấn.
-        else:
-            if re.search(r'xa|Commune|x\.', c_address):
-                ward_level = 'Commune'
-            elif re.search(r'phuong|ward|p\.', c_address):
-                ward_level = 'Ward'
-            elif re.search(r'thitran|town|tt\.', c_address):
-                ward_level = 'Town'
-            else:
-                # If level is not found, we have default level based on Google Trend
-                ward_level = duplicated_ward_keys[ward_key]
+        # else:
+        #     if re.search(r'xa|Commune|x\.', c_address):
+        #         ward_level = 'Commune'
+        #     elif re.search(r'phuong|ward|p\.', c_address):
+        #         ward_level = 'Ward'
+        #     elif re.search(r'thitran|town|tt\.', c_address):
+        #         ward_level = 'Town'
+        #     else:
+        #         # If level is not found, we have default level based on Google Trend
+        #         ward_level = duplicated_ward_keys[ward_key]
+        #
+        #     ward_entry = ward_data[ward_level]
 
-            ward_entry = ward_data[ward_level]
-
-        admin_unit.ward = ward_entry['ward']
-        admin_unit.long_ward = ward_entry['long_ward']
-        admin_unit.short_ward = ward_entry['short_ward']
-        admin_unit.ward_english = ward_entry['ward_english']
-        admin_unit.long_ward_english = ward_entry['long_ward_english']
-        admin_unit.short_ward_english = ward_entry['short_ward_english']
-        admin_unit.ward_level = ward_entry['ward_level']
-        admin_unit.ward_level_english = ward_entry['ward_level_english']
-        admin_unit.ward_key = ward_key
+        if ward_entry:
+            admin_unit.ward = ward_entry['ward']
+            admin_unit.long_ward = ward_entry['long_ward']
+            admin_unit.short_ward = ward_entry['short_ward']
+            admin_unit.ward_english = ward_entry['ward_english']
+            admin_unit.long_ward_english = ward_entry['long_ward_english']
+            admin_unit.short_ward_english = ward_entry['short_ward_english']
+            admin_unit.ward_level = ward_entry['ward_level']
+            admin_unit.ward_level_english = ward_entry['ward_level_english']
+            admin_unit.ward_key = ward_key
 
     return admin_unit
 
 
 if __name__ == '__main__':
-    print(parse_address('p2 q5'))
+    print(parse_address('Lộc Thành, Loc Ninh, Binh Phuoc'))
