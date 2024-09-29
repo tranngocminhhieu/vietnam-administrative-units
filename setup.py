@@ -8,4 +8,7 @@ setup(
     package_data={
         'vietadminunits': ['data/*.pkl', 'data/*.db'],
     },
+    install_requires=[
+        'unidecode'
+    ]
 )
