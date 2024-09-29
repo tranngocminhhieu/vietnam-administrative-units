@@ -123,7 +123,7 @@ def replace_from_right(s, old, new):
 with pkg_resources.open_binary('vietadminunits.data', 'parse.pkl') as f:
     data = pickle.load(f)
 
-## Part 1:
+## Part_1_base.ipynb:
 DICT_long_province_alphanumerics = data['DICT_long_province_alphanumerics']
 DICT_long_district_alphanumerics = data['DICT_long_district_alphanumerics'] # Use after getting province
 DICT_long_ward_alphanumerics = data['DICT_long_ward_alphanumerics'] # Use after getting district
@@ -131,51 +131,44 @@ DICT_long_ward_alphanumerics = data['DICT_long_ward_alphanumerics'] # Use after 
 LIST_safe_long_district_alphanumerics = data['LIST_safe_long_district_alphanumerics']
 LIST_safe_long_ward_alphanumerics = data['LIST_safe_long_ward_alphanumerics']
 
-# LIST_province_keys_1 = data['LIST_province_keys_1']
-# LIST_province_keys_2 = data['LIST_province_keys_2']
-# LIST_province_keys_3 = data['LIST_province_keys_3']
-
 DICT_province_map = data['DICT_province_map']
 DICT_district_map = data['DICT_district_map']
 DICT_ward_map = data['DICT_ward_map']
 DICT_duplicated_ward_map = data['DICT_duplicated_ward_map']
 
-# LIST_duplicated_district_province_keys = data['LIST_duplicated_district_province_keys']
 DICT_duplicated_district_keys = data['DICT_duplicated_district_keys']
-
-# LIST_duplicated_ward_district_keys = data['LIST_duplicated_ward_district_keys']
 DICT_duplicated_ward_keys = data['DICT_duplicated_ward_keys']
 
 DICT_unique_long_district_alphanumerics = data['DICT_unique_long_district_alphanumerics']
 DICT_not_unique_long_district_alphanumerics = data['DICT_not_unique_long_district_alphanumerics']
 LIST_contains_province_key_long_district_alphanumerics = data['LIST_contains_province_key_long_district_alphanumerics']
 DICT_unique_district_keys = data['DICT_unique_district_keys']
-DICT_not_unique_district_keys = ['DICT_not_unique_district_keys']
+DICT_not_unique_district_keys = data['DICT_not_unique_district_keys']
 
 DICT_alias_province_keys = data.get('DICT_alias_province_keys', {})
-## Part 2:
 
+## Part_2_alias_and_half_district_keys.ipynb:
 DICT_alias_district_keys = data.get('DICT_alias_district_keys', {}) # Use after getting province
 DICT_half_district_keys = data.get('DICT_half_district_keys', {}) # Use after getting province
 
-## Part 3:
+## Part_3_double_check_keys.ipynb:
 DICT_double_check_provinces = data.get('DICT_double_check_provinces', {}) # Use after getting province_key
 DICT_double_check_districts = data.get('DICT_double_check_districts', {}) # Use after getting province and district_key
 DICT_double_check_wards = data.get('DICT_double_check_wards', {}) # Use after getting ward_key
 
+## Part_4_double_check_inverted_keys.ipynb
+DICT_double_check_inverted_provinces = data.get('DICT_double_check_inverted_provinces', {})
+# DICT_double_check_inverted_districts = data.get('DICT_double_check_inverted_districts', {})
+
+
 # Precompile
-## Part 1:
+## From data
 PATTERN_long_province_alphanumerics = re.compile(rf"{'|'.join(DICT_long_province_alphanumerics)}".replace('.', '\.')) # For searching
 PATTERN_safe_long_district_long_ward_alphanumerics = re.compile(rf"{'|'.join(LIST_safe_long_district_alphanumerics + LIST_safe_long_ward_alphanumerics)}".replace('.', '\.')) # For removing from the address before finding province
 PATTERN_safe_long_ward_alphanumerics = re.compile(rf"{'|'.join(LIST_safe_long_ward_alphanumerics)}".replace('.', '\.')) # For removing from the address before finding district
 
 PATTERN_province_keys = re.compile(rf"(?=({'|'.join(DICT_province_map)}))")
-# PATTERN_province_keys = re.compile(rf"(?=({'|'.join(LIST_province_keys_1 + LIST_province_keys_2 + LIST_province_keys_3)}))")
-# PATTERN_province_keys_1 = re.compile(rf"{'|'.join(LIST_province_keys_1)}") # For searching
-# PATTERN_province_keys_2 = re.compile(rf"{'|'.join(LIST_province_keys_2)}") # For searching
-# PATTERN_province_keys_3 = re.compile(rf"{'|'.join(LIST_province_keys_3)}") # For searching
-# LIST_PATTERN_province_keys_2 = [re.compile(province_key) for province_key in LIST_province_keys_2] # For searching
-# LIST_PATTERN_province_keys_3 = [re.compile(province_key) for province_key in LIST_province_keys_3] # For searching
+PATTERN_alias_province_keys = re.compile(rf"{'|'.join(DICT_alias_province_keys) or 'placeholder'}".replace('.', '\.')) # For searching
 
 PATTERN_unique_long_district_alphanumerics = re.compile(rf"{'|'.join(DICT_unique_long_district_alphanumerics) or 'placeholder'}".replace('.', '\.'))
 PATTERN_not_unique_long_district_alphanumerics = re.compile(rf"{'|'.join(DICT_not_unique_long_district_alphanumerics) or 'placeholder'}".replace('.', '\.'))
@@ -183,17 +176,10 @@ PATTERN_contains_province_key_long_district_alphanumerics = re.compile(rf"{'|'.j
 PATTERN_unique_district_keys = re.compile(rf"{'|'.join(DICT_unique_district_keys) or 'placeholder'}".replace('.', '\.'))
 PATTERN_not_unique_district_keys = re.compile(rf"{'|'.join(DICT_not_unique_district_keys) or 'placeholder'}".replace('.', '\.'))
 
-PATTERN_alias_province_keys = re.compile(rf"{'|'.join(DICT_alias_province_keys) or 'placeholder'}".replace('.', '\.')) # For searching
-
 
 ## Grammar
 grammar_replacements = [(re.compile(rf"\b{old}\b"), new) for old, new in [('qui', 'quy'), ('pak', 'pac'), ('hn', 'ha noi'), ('n\.t', 'nt'), ('xa\s?lo\s?ha\s?noi', ''), ('ki', 'ky'), ('duong\s?dien\s?bien\s?phu', '')]]
 
-
-
-# Test
-DICT_double_check_inverted_provinces = data.get('DICT_double_check_inverted_provinces', {})
-DICT_double_check_inverted_districts = data.get('DICT_double_check_inverted_districts', {})
 
 
 
@@ -459,12 +445,14 @@ def parse_address(address: str, level=3):
                 match = re.search(rf"{'|'.join(half_district_keys) or 'placeholder'}".replace('.', '\.'), tmp_address)
                 if match:
                     half_district_key = match.group()
-
+                    # print('half_district_key:', half_district_key)
                     # Set default value
                     district_key = half_district_keys[half_district_key]['default']
 
+                    # print('default district_key:' , district_key)
+
                     # Try one more time based on ward_keys
-                    tmp_district_keys = half_district_keys[half_district_key]
+                    tmp_district_keys = half_district_keys[half_district_key]['district_keys']
                     tmp_address = replace_from_right(c_address, half_district_key, '') # Remove half_district_key from address
                     for tmp_district_key in tmp_district_keys:
                         tmp_ward_keys = tmp_district_keys[tmp_district_key]
@@ -472,6 +460,7 @@ def parse_address(address: str, level=3):
                             district_key = tmp_district_key
                             break
 
+    # print('Found district keys:', district_key)
 
     if district_key:
         # Some ward_keys are the same district_key of other districts. Eg: Thanh Trì, Hà Nội và Thanh Trì, Hoàng Mai, Hà Nội
@@ -669,5 +658,5 @@ def parse_address(address: str, level=3):
 
 
 if __name__ == '__main__':
-    1 + 1
-    #print(parse_address('Lộc Thành, Loc Ninh, Binh Phuoc'))
+    True
+    print(parse_address('Thượng Cát, Từ Liêm, Hà Nội'))

@@ -160,5 +160,5 @@ cython_debug/
 .idea/
 .gitattributes
 .DS_store
-data/testing/
+data/private/
 notebook/testing/private/

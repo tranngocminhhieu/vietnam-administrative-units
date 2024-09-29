@@ -63,35 +63,35 @@ print(admin_unit)
 
 ```text
 AdministrativeUnit:
-Attribute                      | Value                         
---------------------------------------------------------------
-province                       | Hồ Chí Minh                   
-district                       | Quận 5                        
-ward                           | Phường 2                      
---------------------------------------------------------------
-long_province                  | Thành phố Hồ Chí Minh         
-long_district                  | Quận 5                        
-long_ward                      | Phường 2                      
---------------------------------------------------------------
-short_district                 | Quận 5                        
-short_ward                     | Phường 2                      
---------------------------------------------------------------
-province_english               | Ho Chi Minh                   
-district_english               | District 5                    
-ward_english                   | Ward 2                        
---------------------------------------------------------------
-long_province_english          | Ho Chi Minh City              
-long_district_english          | District 5                    
-long_ward_english              | Ward 2                        
---------------------------------------------------------------
-short_district_english         | District 5                    
-short_ward_english             | Ward 2                        
---------------------------------------------------------------
-district_level                 | Quận                          
-ward_level                     | Phường                        
---------------------------------------------------------------
-district_level_english         | District                      
-ward_level_english             | Ward                          
+Attribute                 | Value                    
+----------------------------------------------------
+province                  | Hồ Chí Minh              
+district                  | Quận 5                   
+ward                      | Phường 2                 
+----------------------------------------------------
+long_province             | Thành phố Hồ Chí Minh    
+long_district             | Quận 5                   
+long_ward                 | Phường 2                 
+----------------------------------------------------
+short_district            | Quận 5                   
+short_ward                | Phường 2                 
+----------------------------------------------------
+province_english          | Ho Chi Minh              
+district_english          | District 5               
+ward_english              | Ward 2                   
+----------------------------------------------------
+long_province_english     | Ho Chi Minh City         
+long_district_english     | District 5               
+long_ward_english         | Ward 2                   
+----------------------------------------------------
+short_district_english    | District 5               
+short_ward_english        | Ward 2                   
+----------------------------------------------------
+district_level            | Quận                     
+ward_level                | Phường                   
+----------------------------------------------------
+district_level_english    | District                 
+ward_level_english        | Ward                     
 ```
 
 #### Get datasets
