@@ -223,6 +223,7 @@ def parse_address(address: str, level=3):
 
 
 
+
     # Prepare address
     c_address = unidecode(address).lower()
 
@@ -232,21 +233,22 @@ def parse_address(address: str, level=3):
     c_address = correct_abbreviation(c_address, 'p')
     c_address = correct_abbreviation(c_address, 'q')
 
+    # Thọ Xuân,Đan Phượng,Thành phố Hà Nội
     ## Drop the street part for beatiful address cases
-    pattern_1 = r'\b(phuong|xa|thi\s?tran|p\.|x\.|tt\.)\b'
-    match_1 = re.search(pattern_1, c_address)
-
-    pattern_2 = r'\b(quan|huyen|thi\s?xa|thanh\s?pho|q\.|h\.|tx\.|tp\.?)\b'
-    match_2 = re.search(pattern_2, c_address)
-
-    if match_1 and match_2 and match_1.start() < match_2.start():
-        start = match_1.start()
-        c_address = c_address[start:]
+    # pattern_1 = r'\b(phuong|xa|thi\s?tran|p\.|x\.|tt\.)\b'
+    # match_1 = re.search(pattern_1, c_address)
+    #
+    # pattern_2 = r'\b(quan|huyen|thi\s?xa|thanh\s?pho|q\.|h\.|tx\.|tp\.?)\b'
+    # match_2 = re.search(pattern_2, c_address)
+    #
+    # if match_1 and match_2 and match_1.start() < match_2.start():
+    #     start = match_1.start()
+    #     c_address = c_address[start:]
 
     ## Removing space have to do after fixing grammar
     c_address = c_address.replace('-', '').replace("'", "").replace(' 0', ' ').replace(' ', '')
     original_address = c_address
-    # print('Clean address:', c_address)
+    #print('Clean address:', c_address)
 
 
     # Find Province
@@ -257,7 +259,7 @@ def parse_address(address: str, level=3):
     
     # Avoid wrong match. Eg: Phường Bình Thuận, Quận 7 -> Bình Thuận. Only works for long name.
     tmp_address = PATTERN_safe_long_district_long_ward_alphanumerics.sub('', c_address)
-    # print('Before Province:', tmp_address)
+    #print('Before Province:', tmp_address)
 
     # Check province_patterns_1 first, these are unique province_keys
     matches = PATTERN_long_province_alphanumerics.findall(tmp_address)
@@ -412,7 +414,7 @@ def parse_address(address: str, level=3):
             #     c_address = replace_from_right(c_address, province_key, '')
 
 
-            # print('After Province', c_address)
+            #print('After Province', c_address)
         province_data = DICT_province_map[province_key]
         admin_unit.province = province_data['province']
         admin_unit.long_province = province_data['long_province']
@@ -435,7 +437,7 @@ def parse_address(address: str, level=3):
     # Should not remove full long_ward_alphanumeric in address due to mistake. Eg: "Thị xã Sơn Tây" will be wrong removed "Xã Sơn Tây"
     tmp_address = PATTERN_safe_long_ward_alphanumerics.sub('', c_address)
 
-    # print('Before District:', tmp_address)
+    #print('Before District:', tmp_address)
 
     matches = re.findall(rf"(?=({'|'.join(long_district_alphanumerics)}))".replace('.', '\.'), tmp_address)
     if matches:
@@ -507,11 +509,11 @@ def parse_address(address: str, level=3):
         # With duplicated district_keys in a province, we need to find the prefix (suffix) to choose the district level.
         # This problem only occurs with Thành phố, Thị xã, Huyện.
         else:
-            if re.search(r'thanhpho|city|tp\.', c_address):
+            if re.search(rf'thanhpho{district_key}|{district_key}city|tp\.{district_key}', c_address):
                 district_level = 'City'
-            elif re.search(r'thixa|town|tx\.', c_address):
+            elif re.search(rf'thixa{district_key}|{district_key}town|tx\.{district_key}', c_address):
                 district_level = 'Town'
-            elif re.search(r'huyen|district|h\.', c_address):
+            elif re.search(rf'huyen{district_key}|{district_key}district|h\.{district_key}', c_address):
                 district_level = 'District'
             else:
                 # If level is not found, we have default level based on Google Trend
@@ -534,7 +536,7 @@ def parse_address(address: str, level=3):
 
         c_address = replace_from_right(c_address, district_key, '')
 
-        # print('After District:', c_address)
+        #print('After District:', c_address)
 
         admin_unit.district = district_entry['district']
         admin_unit.long_district = district_entry['long_district']
@@ -570,6 +572,8 @@ def parse_address(address: str, level=3):
 
     if ward_key:
 
+        #print('Tìm được ward_key:', ward_key)
+
         if ward_key in DICT_double_check_wards.get(admin_unit.province_english, {}).get(admin_unit.district_english, {}):
             new_keys = DICT_double_check_wards.get(admin_unit.province_english, {}).get(admin_unit.district_english, {}).get(ward_key, [])
             match = re.search(rf"{'|'.join(new_keys) or 'placeholder'}", original_address)
@@ -585,36 +589,49 @@ def parse_address(address: str, level=3):
                     ward_key = tmp_ward_key
 
 
+        #print('Sau khi double check ward:', ward_key)
+
+
         ward_data = ward_keys[ward_key]
 
         duplicated_ward_keys = DICT_duplicated_ward_keys.get(admin_unit.province_english, {}).get(admin_unit.district_english, {})
         # To avoid wrong data input for unique wards in a district, just get the first item
 
+        #print('duplicated_ward_keys:', duplicated_ward_keys)
+
         ward_entry = None
         if not (ward_key in duplicated_ward_keys):
             ward_entry = ward_data[next(iter(ward_data))]
+            #print('Không nằm trong duplicated ward')
 
 
         else:
+            #print('Có nằm trong duplicated ward')
             short_names = duplicated_ward_keys.get(ward_key, {})
+            #print('short_names:', short_names)
             short_name = None
             if len(short_names) == 1:
-                short_name = short_names[next(iter(short_names))]
+                short_name = next(iter(short_names))
             else:
                 match = re.search(rf"{'|'.join(short_names)}", address.title(), flags=re.IGNORECASE)
                 if match:
                     short_name = match.group()
 
+            #print('shortname:', short_name)
+
             ward_level = None
             if short_name:
-                if re.search(r'xa|Commune|x\.', c_address):
-                    ward_level = 'Commune'
-                elif re.search(r'phuong|ward|p\.', c_address):
-                    ward_level = 'Ward'
-                elif re.search(r'thitran|town|tt\.', c_address):
-                    ward_level = 'Town'
-                else:
-                    ward_level = short_names.get(short_name, None)
+                # Default
+                ward_level = short_names.get(short_name, {}).get('default')
+                if short_names.get(short_name, {}).get('total') != 1:
+                    if re.search(rf'xa{ward_key}|{ward_key}commune|x\.{ward_key}', c_address):
+                        ward_level = 'Commune'
+                    elif re.search(rf'phuong{ward_key}|{ward_key}ward|p\.{ward_key}', c_address):
+                        ward_level = 'Ward'
+                    elif re.search(rf'thitran{ward_key}|{ward_key}town|tt\.{ward_key}', c_address):
+                        ward_level = 'Town'
+
+            #print('ward_level:', ward_level)
 
             if short_name and ward_level:
                 ward_entry = DICT_duplicated_ward_map.get(admin_unit.province_english, {}).get(admin_unit.district_english, {}).get(short_name, {}).get(ward_level, {})
@@ -652,4 +669,5 @@ def parse_address(address: str, level=3):
 
 
 if __name__ == '__main__':
-    print(parse_address('Lộc Thành, Loc Ninh, Binh Phuoc'))
+    1 + 1
+    #print(parse_address('Lộc Thành, Loc Ninh, Binh Phuoc'))
