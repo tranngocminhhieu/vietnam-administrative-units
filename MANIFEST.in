@@ -1,0 +1,2 @@
+include vietadminunits/data/*.pkl
+include vietadminunits/data/*.db
