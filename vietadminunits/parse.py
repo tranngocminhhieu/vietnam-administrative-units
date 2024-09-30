@@ -119,8 +119,10 @@ def replace_from_right(s, old, new):
         return s[:pos] + new + s[pos + len(old):]
     return s
 
+data_path = pkg_resources.files('vietadminunits.data') / 'parse.pkl'
+
 # Load data from pickle
-with pkg_resources.open_binary('vietadminunits.data', 'parse.pkl') as f:
+with data_path.open('rb') as f:
     data = pickle.load(f)
 
 ## Part_1_base.ipynb:
