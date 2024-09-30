@@ -23,4 +23,5 @@ def get_data(fields='*'):
 
 
 if __name__ == '__main__':
+    print(data_path)
     print(get_data('province'))
