@@ -1,7 +1,11 @@
 import sqlite3
-import importlib.resources as pkg_resources
+import os
 
-data_path = pkg_resources.files('vietadminunits.data') / 'datasets.db'
+# Get the directory of the current script (parse.py)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Construct the path to the datasets.db file
+data_path = os.path.join(current_dir, 'data', 'datasets.db')
 
 def get_data(fields='*'):
     '''

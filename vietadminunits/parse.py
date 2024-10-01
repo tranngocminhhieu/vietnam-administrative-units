@@ -1,7 +1,7 @@
 import re
 from unidecode import unidecode
 import pickle
-import importlib.resources as pkg_resources
+import os
 
 class AdministrativeUnit:
     def __init__(self,
@@ -119,10 +119,14 @@ def replace_from_right(s, old, new):
         return s[:pos] + new + s[pos + len(old):]
     return s
 
-data_path = pkg_resources.files('vietadminunits.data') / 'parse.pkl'
+# Get the directory of the current script (parse.py)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Construct the path to the datasets.db file
+data_path = os.path.join(current_dir, 'data', 'parse.pkl')
 
 # Load data from pickle
-with data_path.open('rb') as f:
+with open(data_path, 'rb') as f:
     data = pickle.load(f)
 
 ## Part_1_base.ipynb:
